@@ -193,4 +193,29 @@ class CardDeckTestCase(unittest.TestCase):
     '''
     def test_ranking_for_valid_hands(self):
         '''Test the point ranking for all valid card hands.'''
-        self.fail("Test not implemented.")
+        best_solo_hand = [self.hlpr._create_card_object_for_card_number(15, "joker")]
+        self.hand.calculate_hand_score(best_solo_hand)
+        best_solo_hand_score = self.hand.hand_score
+        
+        best_pair_hand = [self.hlpr._create_card_object_for_card_number(2)] * 2
+        self.hand.calculate_hand_score(best_pair_hand)
+        best_pair_hand_score = self.hand.hand_score
+
+        best_trio_hand = [self.hlpr._create_card_object_for_card_number(2)] * 3
+        self.hand.calculate_hand_score(best_trio_hand)
+        best_trio_hand_score = self.hand.hand_score
+
+        best_bomb_hand = [self.hlpr._create_card_object_for_card_number(2)] * 4
+        self.hand.calculate_hand_score(best_bomb_hand)
+        best_bomb_hand_score = self.hand.hand_score
+        
+        best_rocket_hand = [self.hlpr._create_card_object_for_card_number(14, "joker"), 
+            self.hlpr._create_card_object_for_card_number(15, "joker")]
+        self.hand.calculate_hand_score(best_rocket_hand)
+        best_rocket_hand_score = self.hand.hand_score
+
+        self.assertTrue(best_solo_hand_score<
+            best_pair_hand_score<
+            best_trio_hand_score<
+            best_bomb_hand_score<
+            best_rocket_hand_score)
