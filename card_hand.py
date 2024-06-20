@@ -32,6 +32,8 @@ class CardHand:
             else:
                 number_freq[card.get_number()] = 1
 
+        self.calculate_hand_score(self.current_hand)
+
         if len(self.current_hand)==1:
             return rules.is_solo(self.current_hand, number_freq)
         elif len(self.current_hand)==2:
@@ -46,5 +48,12 @@ class CardHand:
 
     def reset(self):
         '''Clear the player's hand, removing all selected cards.'''
-        self.current_hand = list()        
+        self.current_hand = list()
+        self.hand_score = 0
+
+    def calculate_hand_score(self, hand):  
+        '''Calculate the score of the player's current hand.'''
+        multiplier = 1 if not rules.is_solo(hand, None) else 0.5
+
+        self.hand_score = int(sum(card.get_points() for card in hand) * multiplier)
         
