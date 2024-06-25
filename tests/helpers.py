@@ -39,7 +39,8 @@ class TestHelpers:
             [9,10,11,12,13,1], 
             [3,4,5,6,7,8,9,10,11,12,13,1],
             [5,6,7,8,9,10,11,12],
-            [7,8,9,10,11,12,13]] 
+            [7,8,9,10,11,12,13],
+            [10,11,12,13,1]] 
 
     def get_invalid_solo_card_chain_hands(self): 
         '''Returns a 2-dimensional list of integers representing the invalid
@@ -100,7 +101,8 @@ class TestHelpers:
             [4,4,6,6,8,8,10,10,12,12],
             [12,12,13,13,1,1,2,2],
             [13,13,1,1,2,2,14,15],
-            [4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,1,1]]
+            [4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,1,1],
+            [11,11,12,12,1,1]]
 
     def get_valid_trio_card_hand(self):
         '''Returns a 2-dimensional list of integers representing the valid
@@ -139,7 +141,8 @@ class TestHelpers:
             [7,7,7,8,8,8,9,9],
             [3,3,3,5,5,5,7,7,7],
             [2,2,2,3,3,3,4,4,4],
-            [8,8,8,9,9,9,10,10,10,11,11,11,12,12,12,13,13,13,1,1,1]]
+            [8,8,8,9,9,9,10,10,10,11,11,11,12,12,12,13,13,13,1,1,1],
+            [12,12,12,1,1,1]]
 
     def get_valid_bomb_card_hand(self):
         '''Returns a 2-dimensional list of integers representing the valid
