@@ -239,9 +239,7 @@ class TestHelpers:
 
         Returns: A Card object. 
         '''
-        return Card(number=number, 
-            suit=suit, 
-            points=self.number_points_dict[number])
+        return Card(number=number, suit=suit)
 
     def convert_hand_numbers_to_card_objects(self, hands, suit="hearts"):
         '''Helper function to convert the card numbers in the hand to Card objects.
