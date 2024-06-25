@@ -1,18 +1,17 @@
 
 ''' Valid Card Hands Methods '''
-def is_solo(hand, number_freq):
+def is_solo(number_freq):
     '''Return if the hand being played is a solo hand. 
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
 
     Returns: True if the hand is a solo hand, False otherwise. 
     '''
-    return len(hand)==1
+    return len(number_freq.keys())==1 and sum(number_freq.values())==1
 
-def is_solo_chain(hand, number_freq):
+def is_solo_chain(number_freq):
     '''Check whether the hand being played is a solo chain hand.
 
     Args: 
@@ -29,7 +28,8 @@ def is_solo_chain(hand, number_freq):
 
     # check chain length not exceeded
     max_chain_length = 12
-    if len(hand)<5 or len(hand)>max_chain_length:
+    cards_in_hand = sum(number_freq.values())
+    if cards_in_hand<5 or cards_in_hand>max_chain_length:
         return False
 
     # convert the ace card to the highest card using an offset value.  
@@ -41,30 +41,28 @@ def is_solo_chain(hand, number_freq):
 
     # check chain is a sequence.
     max_card_number = max(freq.keys())
-    min_card_number = max_card_number-len(hand)+1
+    min_card_number = max_card_number-cards_in_hand+1
     for i in range(min_card_number+1, max_card_number+1):
         if i not in freq.keys() or freq[i]!=1:
             return False
 
     return True
 
-def is_pair(hand, number_freq):
+def is_pair(number_freq):
     '''Check whether the hand being played is a pair hand.
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
     
     Returns: True if the hand is a pair hand, False otherwise. 
     '''
-    return len(hand)==2 and (is_rocket(hand) or len(number_freq.keys())==1)
+    return sum(number_freq.values())==2 and (is_rocket(number_freq) or len(number_freq.keys())==1)
 
-def is_pair_chain(hand, number_freq):
+def is_pair_chain(number_freq):
     '''Check whether the hand being played is a pair chain hand.
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
 
@@ -77,7 +75,9 @@ def is_pair_chain(hand, number_freq):
 
     # check chain length.
     max_chain_length = 20
-    if len(hand)<6 or len(hand)>max_chain_length or len(hand)%2==1:
+    cards_in_hand = sum(number_freq.values())
+    # if len(hand)<6 or len(hand)>max_chain_length or len(hand)%2==1:
+    if cards_in_hand<6 or cards_in_hand>max_chain_length or cards_in_hand%2==1:
         return False
 
     # convert ace card number to the highest card number using an offset value.
@@ -89,31 +89,30 @@ def is_pair_chain(hand, number_freq):
 
     # check the sequence of the chain. 
     max_card_number = max(freq.keys())
-    min_card_number = max_card_number-int(len(hand)/2)+1
+    # min_card_number = max_card_number-int(len(hand)/2)+1
+    min_card_number = max_card_number-int(cards_in_hand/2)+1
     for i in range(min_card_number+1, max_card_number+1):
         if i not in freq.keys() or freq[i]!=2:
             return False 
 
     return True
 
-def is_trio(hand, number_freq):
+def is_trio(number_freq):
     '''Check whether the hand being played is a trio hand.
 
-    Args: 
-        hand - A collection of Card objects containing at least one object. 
+    Args:  
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
     
     Returns: True if the hand is a trio hand, False otherwise. 
     '''
-    return len(hand)==3 and len(number_freq.keys())==1
+    return len(number_freq.keys())==1 and sum(number_freq.values())==3
 
-def is_trio_chain(hand, number_freq):
+def is_trio_chain(number_freq):
     '''Check whether the hand being played is a trio chain hand. Note: A trio chain 
     is also known as an airplane hand. 
 
-    Args: 
-        hand - A collection of Card objects containing at least one object. 
+    Args:  
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
 
@@ -126,7 +125,8 @@ def is_trio_chain(hand, number_freq):
 
     # check chain length.
     max_chain_length = 18
-    if len(hand)<6 or len(hand)>max_chain_length or len(hand)%3!=0:
+    cards_in_hand = sum(number_freq.values())
+    if cards_in_hand<6 or cards_in_hand>max_chain_length or cards_in_hand%3!=0:
         return False
 
     # convert ace card number to the highest card number using an offset value.
@@ -138,41 +138,40 @@ def is_trio_chain(hand, number_freq):
 
     # check the sequence of the chain. 
     max_card_number = max(freq.keys())
-    min_card_number = max_card_number-int(len(hand)//3)+1
+    # min_card_number = max_card_number-int(len(hand)//3)+1
+    min_card_number = max_card_number-int(cards_in_hand//3)+1
     for i in range(min_card_number+1, max_card_number+1):
         if i not in freq.keys() or freq[i]!=3:
             return False
 
     return True
 
-def is_bomb(hand, number_freq):
+def is_bomb(number_freq):
     '''Check whether the hand being played is a bomb hand.
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
     
     Returns: True if the hand is a bomb hand, False otherwise. 
     '''
-    return len(hand)==4 and len(number_freq.keys())==1
+    return len(number_freq.keys())==1 and sum(number_freq.values())==4
 
-def is_rocket(hand):
+def is_rocket(number_freq):
     '''Check whether the hand being played is a rocket hand.
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
 
     Returns: True if the hand is a rocket hand, False otherwise. 
     '''
-    card_numbers = set([card.get_number() for card in hand])
-    return len(hand)==2 and 14 in card_numbers and 15 in card_numbers
+    return len(number_freq.keys())==2 and 14 in number_freq.keys() and 15 in number_freq.keys()
 
-def contains_solo_hand(hand, number_freq):
+def contains_solo_hand(number_freq):
     '''Check whether the hand being played contains a solo hand.
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
 
@@ -205,11 +204,10 @@ def contains_solo_hand(hand, number_freq):
 
     return number_of_solo_cards_needed==0
 
-def contains_pair_hand(hand, number_freq):
+def contains_pair_hand(number_freq):
     '''Check whether the hand being played contains a pair hand.
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
     
@@ -250,30 +248,28 @@ def contains_pair_hand(hand, number_freq):
 
     return number_of_pair_cards_needed==0
 
-def is_chain(hand, number_freq):
+def is_chain(number_freq):
     '''Check whether the hand being played is a chain hand.
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
     
     Returns: True if the hand is chain type hand, False otherwise. 
     '''
-    return (is_solo_chain(hand, number_freq) or is_pair_chain(hand, number_freq) or
-        is_trio_chain(hand, number_freq))
+    return (is_solo_chain(number_freq) or is_pair_chain(number_freq) or
+        is_trio_chain(number_freq))
 
-def is_combination(hand, number_freq):
+def is_combination(number_freq):
     '''Check whether the hand being played is a combination hand.
 
     Args: 
-        hand - A collection of Card objects containing at least one object. 
         number_freq - A hash map that maps the card number to the number of 
                     times it appears in the hand.
     
     Returns: True if the hand is a combination hand, False otherwise. 
     '''
-    return contains_solo_hand(hand, number_freq) or contains_pair_hand(hand, number_freq)
+    return contains_solo_hand(number_freq) or contains_pair_hand(number_freq)
 
 
     

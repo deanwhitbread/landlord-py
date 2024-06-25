@@ -24,7 +24,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_solo(hand, number_freq))
+            self.assertTrue(rules.is_solo(number_freq))
 
     def test_valid_is_solo_chain_hand(self):
         '''Test the is_solo_chain_hand method returns true for valid card hands.'''
@@ -32,7 +32,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)            
-            self.assertTrue(rules.is_solo_chain(hand, number_freq))
+            self.assertTrue(rules.is_solo_chain(number_freq))
 
     def test_invalid_is_solo_chain_hand(self):
         '''Test the is_solo_chain_hand method returns false for invalid card hands.'''
@@ -40,7 +40,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_solo_chain(hand, number_freq))
+            self.assertFalse(rules.is_solo_chain(number_freq))
 
     def test_valid_is_pair_hand(self):
         '''Test the is_pair_hand method returns true for valid card hands.'''
@@ -48,7 +48,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_pair(hand, number_freq))
+            self.assertTrue(rules.is_pair(number_freq))
 
     def test_invalid_is_pair_hand(self):
         '''Test the is_pair_hand method returns false for invalid card hands.'''
@@ -56,7 +56,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_pair(hand, number_freq))
+            self.assertFalse(rules.is_pair(number_freq))
 
     def test_valid_is_pair_chain_hand(self):
         '''Test the is_pair_chain_hand method returns true for valid card hands.'''
@@ -64,7 +64,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_pair_chain(hand, number_freq))
+            self.assertTrue(rules.is_pair_chain(number_freq))
 
     def test_invalid_is_pair_chain_hand(self):
         '''Test the is_pair_chain_hand method returns false for invalid card hands.'''
@@ -72,7 +72,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_pair_chain(hand, number_freq))
+            self.assertFalse(rules.is_pair_chain(number_freq))
 
     def test_valid_is_trio_hand(self):
         '''Test the is_trio_hand method returns true for valid card hands.'''
@@ -80,7 +80,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_trio(hand, number_freq))
+            self.assertTrue(rules.is_trio(number_freq))
 
     def test_invalid_is_trio_hand(self):
         '''Test the is_trio_hand method returns false for invalid card hands.'''
@@ -88,7 +88,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_trio(hand, number_freq))
+            self.assertFalse(rules.is_trio(number_freq))
 
     def test_valid_is_trio_chain_hand(self):
         '''Test the is_trio_chain_hand method returns true for valid card hands.'''
@@ -96,7 +96,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_trio_chain(hand, number_freq))
+            self.assertTrue(rules.is_trio_chain(number_freq))
 
     def test_invalid_is_trio_chain_hand(self):
         '''Test the is_trio_chain_hand method returns false for invalid card hands.'''
@@ -104,7 +104,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_trio_chain(hand, number_freq))
+            self.assertFalse(rules.is_trio_chain(number_freq))
 
     def test_valid_is_bomb_hand(self):
         '''Test the is_bomb_hand method returns true for valid card hands.'''
@@ -112,7 +112,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_bomb(hand, number_freq))
+            self.assertTrue(rules.is_bomb(number_freq))
     
     def test_invalid_is_bomb_hand(self):
         '''Test the is_bomb_hand method returns false for invalid card hands.'''
@@ -120,7 +120,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_bomb(hand, number_freq))
+            self.assertFalse(rules.is_bomb(number_freq))
 
     def test_valid_is_rocket_hand(self):
         '''Test the is_rocket_hand method returns true for valid card hands.'''
@@ -128,7 +128,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_rocket(hand))
+            self.assertTrue(rules.is_rocket(number_freq))
     
     def test_invalid_is_rocket_hand(self):
         '''Test the is_rocket_hand method returns false for invalid card hands.'''
@@ -136,7 +136,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_rocket(hand))
+            self.assertFalse(rules.is_rocket(number_freq))
 
     def test_valid_is_chain_hand(self):
         '''Test the is_chain_hand method returns true for valid card hands.'''
@@ -144,19 +144,19 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_chain(hand, number_freq))
+            self.assertTrue(rules.is_chain(number_freq))
         
         hands = self.hlpr.get_valid_pair_chain_card_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_chain(hand, number_freq))
+            self.assertTrue(rules.is_chain(number_freq))
 
         hands = self.hlpr.get_valid_trio_chain_card_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_chain(hand, number_freq))
+            self.assertTrue(rules.is_chain(number_freq))
 
     def test_invalid_is_chain_hand(self):
         '''Test the is_chain_hand method returns false for invalid card hands.'''
@@ -164,19 +164,19 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_chain(hand, number_freq))
+            self.assertFalse(rules.is_chain(number_freq))
         
         hands = self.hlpr.get_invalid_pair_chain_card_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_chain(hand, number_freq))
+            self.assertFalse(rules.is_chain(number_freq))
 
         hands = self.hlpr.get_invalid_trio_chain_card_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_chain(hand, number_freq))
+            self.assertFalse(rules.is_chain(number_freq))
 
     def test_valid_is_combination_hand(self):
         '''Test the is_combination_hand method returns true for valid card hands.'''
@@ -184,13 +184,13 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_combination(hand, number_freq)) 
+            self.assertTrue(rules.is_combination(number_freq)) 
 
         hands = self.hlpr.get_valid_combination_with_pair_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.is_combination(hand, number_freq)) 
+            self.assertTrue(rules.is_combination(number_freq)) 
     
     def test_invalid_is_combination_hand(self):
         '''Test the is_combination_hand method returns false for invalid card hands.'''
@@ -198,13 +198,13 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_combination(hand, number_freq)) 
+            self.assertFalse(rules.is_combination(number_freq)) 
 
         hands = self.hlpr.get_invalid_combination_with_pair_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.is_combination(hand, number_freq)) 
+            self.assertFalse(rules.is_combination(number_freq)) 
     
     def test_valid_contains_solo_hand(self):
         '''Test the contains_solo_hand method returns true for valid card hands.'''
@@ -212,7 +212,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.contains_solo_hand(hand, number_freq))
+            self.assertTrue(rules.contains_solo_hand(number_freq))
 
     def test_invalid_contains_solo_hand(self):
         '''Test the contains_solo_hand method returns false for invalid card hands.'''
@@ -220,7 +220,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.contains_solo_hand(hand, number_freq)) 
+            self.assertFalse(rules.contains_solo_hand(number_freq)) 
 
     def test_valid_contains_pair_hand(self):
         '''Test the contains_pair_hand method returns true for valid card hands.'''
@@ -228,7 +228,7 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertTrue(rules.contains_pair_hand(hand, number_freq)) 
+            self.assertTrue(rules.contains_pair_hand(number_freq)) 
 
     def test_invalid_contains_pair_hand(self):
         '''Test the contains_pair_hand method returns false for invalid card hands.'''
@@ -236,4 +236,4 @@ class GameRulesTestCase(unittest.TestCase):
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
-            self.assertFalse(rules.contains_pair_hand(hand, number_freq)) 
+            self.assertFalse(rules.contains_pair_hand(number_freq)) 
