@@ -53,7 +53,14 @@ class CardHand:
 
     def calculate_hand_score(self, hand):  
         '''Calculate the score of the player's current hand.'''
-        multiplier = 1 if not rules.is_solo(hand, None) else 0.5
+        number_freq = dict()
+        for card in hand:
+            if card.get_number() in number_freq.keys():
+                number_freq[card.get_number()] += 1
+            else:
+                number_freq[card.get_number()] = 1
+        
+        multiplier = 2 if rules.is_bomb(hand, number_freq) or rules.is_rocket(hand) else 1
 
         self.hand_score = int(sum(card.get_points() for card in hand) * multiplier)
         
