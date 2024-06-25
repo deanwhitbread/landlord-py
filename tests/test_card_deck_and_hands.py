@@ -5,7 +5,7 @@ from tests import helpers
 
 class CardDeckTestCase(unittest.TestCase):
     def setUp(self):
-        self.solo_hand = [[3],[11],[2],[14],[15],[5]] 
+        self.solo_hand = [[3],[11],[2],[14],[15],[5]]
 
     def tearDown(self):
         self.__class__.hand.reset()
@@ -191,31 +191,142 @@ class CardDeckTestCase(unittest.TestCase):
     '''
         Card Hand Ranking
     '''
-    def test_ranking_for_valid_hands(self):
-        '''Test the point ranking for all valid card hands.'''
-        best_solo_hand = [self.hlpr._create_card_object_for_card_number(15, "joker")]
-        self.hand.calculate_hand_score(best_solo_hand)
-        best_solo_hand_score = self.hand.hand_score
-        
-        best_pair_hand = [self.hlpr._create_card_object_for_card_number(2)] * 2
-        self.hand.calculate_hand_score(best_pair_hand)
-        best_pair_hand_score = self.hand.hand_score
+    def test_bomb_beat_solo_hands(self):
+        '''Test that the bomb card hand beats both solo hand and 
+        solo chain hand.'''
+        bomb_hand = [[2,2,2,2]]
+        bomb_hand = self.hlpr.convert_hand_numbers_to_card_objects(bomb_hand)
+        self.hand.calculate_hand_score(bomb_hand.pop())
+        bomb_score = self.hand.hand_score
 
-        best_trio_hand = [self.hlpr._create_card_object_for_card_number(2)] * 3
-        self.hand.calculate_hand_score(best_trio_hand)
-        best_trio_hand_score = self.hand.hand_score
+        solo_hand = self.hlpr.convert_hand_numbers_to_card_objects([[15]])
+        self.hand.calculate_hand_score(solo_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
 
-        best_bomb_hand = [self.hlpr._create_card_object_for_card_number(2)] * 4
-        self.hand.calculate_hand_score(best_bomb_hand)
-        best_bomb_hand_score = self.hand.hand_score
-        
-        best_rocket_hand = [self.hlpr._create_card_object_for_card_number(14, "joker"), 
-            self.hlpr._create_card_object_for_card_number(15, "joker")]
-        self.hand.calculate_hand_score(best_rocket_hand)
-        best_rocket_hand_score = self.hand.hand_score
+        solo_hand = self.hlpr.convert_hand_numbers_to_card_objects([[3,4,5,6,7,8,9,10,11,12,13,1]])
+        self.hand.calculate_hand_score(solo_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
 
-        self.assertTrue(best_solo_hand_score<
-            best_pair_hand_score<
-            best_trio_hand_score<
-            best_bomb_hand_score<
-            best_rocket_hand_score)
+    def test_bomb_beat_pair_hands(self):
+        '''Test that the bomb card hand beats both pair hand and 
+        pair chain hand.'''
+        bomb_hand = [[2,2,2,2]]
+        bomb_hand = self.hlpr.convert_hand_numbers_to_card_objects(bomb_hand)
+        self.hand.calculate_hand_score(bomb_hand.pop())
+        bomb_score = self.hand.hand_score
+
+        pair_hand = self.hlpr.convert_hand_numbers_to_card_objects([[2,2]])
+        self.hand.calculate_hand_score(pair_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
+
+        pair_hand = self.hlpr.convert_hand_numbers_to_card_objects([[5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,1,1]])
+        self.hand.calculate_hand_score(pair_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
+
+    def test_bomb_beat_trio_hands(self):
+        '''Test that the bomb card hand beats trio hand, trio 
+        chain hand, and trio with solo hand.'''
+        bomb_hand = [[2,2,2,2]]
+        bomb_hand = self.hlpr.convert_hand_numbers_to_card_objects(bomb_hand)
+        self.hand.calculate_hand_score(bomb_hand.pop())
+        bomb_score = self.hand.hand_score
+
+        trio_hand = self.hlpr.convert_hand_numbers_to_card_objects([[2,2,2]])
+        self.hand.calculate_hand_score(trio_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
+
+        trio_hand = self.hlpr.convert_hand_numbers_to_card_objects([[9,9,9,10,10,10,11,11,11,12,12,12,13,13,13,1,1,1]])
+        self.hand.calculate_hand_score(trio_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
+
+        trio_hand = self.hlpr.convert_hand_numbers_to_card_objects([[2,2,2,15]])
+        self.hand.calculate_hand_score(trio_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
+
+        trio_hand = self.hlpr.convert_hand_numbers_to_card_objects([[2,2,2,1,1]])
+        self.hand.calculate_hand_score(trio_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
+
+    def test_bomb_beat_airplane_hands(self):
+        '''Test that the bomb card hand beats both airplane with solo 
+        hand and airplane with pair hand.'''
+        bomb_hand = [[2,2,2,2]]
+        bomb_hand = self.hlpr.convert_hand_numbers_to_card_objects(bomb_hand)
+        self.hand.calculate_hand_score(bomb_hand[0])
+        bomb_score = self.hand.hand_score
+
+        airplane_hand = self.hlpr.convert_hand_numbers_to_card_objects([[10,10,10,11,11,11,12,12,12,13,13,13,1,1,1,5,6,7,8,9]])
+        self.hand.calculate_hand_score(airplane_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
+
+        airplane_hand = self.hlpr.convert_hand_numbers_to_card_objects([[11,11,11,12,12,12,13,13,13,1,1,1,6,6,7,7,8,8,9,9]])
+        self.hand.calculate_hand_score(airplane_hand.pop())
+        self.assertTrue(bomb_score > self.hand.hand_score)
+
+    def test_rocket_beat_solo_hands(self):
+        '''Test that the rocket card hand beats both solo hand and 
+        solo chain hand.'''
+        rocket_hand = self.hlpr.convert_hand_numbers_to_card_objects([[14,15]])
+        self.hand.calculate_hand_score(rocket_hand.pop())
+        rocket_score = self.hand.hand_score
+
+        solo_hand = self.hlpr.convert_hand_numbers_to_card_objects([[15]])
+        self.hand.calculate_hand_score(solo_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+        solo_hand = self.hlpr.convert_hand_numbers_to_card_objects([[3,4,5,6,7,8,9,10,11,12,13,1]])
+        self.hand.calculate_hand_score(solo_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+    def test_rocket_beat_pair_hands(self):
+        '''Test that the rocket card hand beats both pair hand and 
+        pair chain hand.'''
+        rocket_hand = self.hlpr.convert_hand_numbers_to_card_objects([[14,15]])
+        self.hand.calculate_hand_score(rocket_hand.pop())
+        rocket_score = self.hand.hand_score
+
+        pair_hand = self.hlpr.convert_hand_numbers_to_card_objects([[2,2]])
+        self.hand.calculate_hand_score(pair_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+        pair_hand = self.hlpr.convert_hand_numbers_to_card_objects([[5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,1,1]])
+        self.hand.calculate_hand_score(pair_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+    def test_rocket_beat_trio_hands(self):
+        '''Test that the rocket card hand beats trio hand, trio 
+        chain hand, and trio with solo hand.'''
+        rocket_hand = self.hlpr.convert_hand_numbers_to_card_objects([[14,15]])
+        self.hand.calculate_hand_score(rocket_hand.pop())
+        rocket_score = self.hand.hand_score
+
+        trio_hand = self.hlpr.convert_hand_numbers_to_card_objects([[2,2,2]])
+        self.hand.calculate_hand_score(trio_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+        trio_hand = self.hlpr.convert_hand_numbers_to_card_objects([[9,9,9,10,10,10,11,11,11,12,12,12,13,13,13,1,1,1]])
+        self.hand.calculate_hand_score(trio_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+        trio_hand = self.hlpr.convert_hand_numbers_to_card_objects([[2,2,2,15]])
+        self.hand.calculate_hand_score(trio_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+        trio_hand = self.hlpr.convert_hand_numbers_to_card_objects([[2,2,2,1,1]])
+        self.hand.calculate_hand_score(trio_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+    def test_rocket_beat_airplane_hands(self):
+        '''Test that the rocket card hand beats airplane hand, airplance
+        with solo hand, and airplane with pair hand.'''
+        rocket_hand = self.hlpr.convert_hand_numbers_to_card_objects([[14,15]])
+        self.hand.calculate_hand_score(rocket_hand.pop())
+        rocket_score = self.hand.hand_score
+
+        airplane_hand = self.hlpr.convert_hand_numbers_to_card_objects([[10,10,10,11,11,11,12,12,12,13,13,13,1,1,1,5,6,7,8,9]])
+        self.hand.calculate_hand_score(airplane_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
+
+        airplane_hand = self.hlpr.convert_hand_numbers_to_card_objects([[11,11,11,12,12,12,13,13,13,1,1,1,6,6,7,7,8,8,9,9]])
+        self.hand.calculate_hand_score(airplane_hand.pop())
+        self.assertTrue(rocket_score > self.hand.hand_score)
