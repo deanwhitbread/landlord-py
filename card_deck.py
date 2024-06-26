@@ -1,5 +1,6 @@
 
 from misc import helpers as hlpr, constants as const
+import random
 
 class Card:
     def __init__(self, number: int, suit: str):
@@ -68,6 +69,32 @@ class CardDeck:
             return 
             
         self.get_card_deck().append(Card(number=card_number, suit=suit))
+
+    def shuffle(self):
+        '''Randomly shuffle the card deck.'''
+        random.shuffle(self.get_card_deck()) 
+    
+    def deal(self):
+        '''Deal the cards to the three players in the game. Each player
+        receives 17 cards each, with the remaining 3 cards becoming wildcards.
+
+        Returns four lists containing Card objects, where the first three sets 
+        contain players' cards, and the final set containing the wildcard deck.
+        '''
+        if len(self.get_card_deck())<54:
+            return list(), list(), list(), list()
+
+        player1, player2, player3 = list(), list(), list()
+        for i in range(17*3):
+            card = self.get_card_deck().pop()
+            if i%3==0:
+                player1.append(card)
+            elif i%3==1:
+                player2.append(card)
+            else:
+                player3.append(card)
+
+        return player1, player2, player3, self.get_card_deck()
     
     def reset(self):
         '''Reset the card deck.'''
