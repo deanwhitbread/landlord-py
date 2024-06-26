@@ -1,3 +1,4 @@
+from card_hand import CardHand
 
 class Player:
     def __init__(self):
@@ -16,3 +17,4 @@ class Player:
 
     def reset(self):
         self.stake = 60
+        self.hand = CardHand()
