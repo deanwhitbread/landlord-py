@@ -74,7 +74,7 @@ class CardDeck:
         '''Randomly shuffle the card deck.'''
         random.shuffle(self.get_card_deck()) 
     
-    def deal(self):
+    def deal(self) -> list[Card]:
         '''Deal the cards to the three players in the game. Each player
         receives 17 cards each, with the remaining 3 cards becoming wildcards.
 
