@@ -6,7 +6,7 @@ class CardDeckTestCase(unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass
+        self.player.reset()
     
     @classmethod
     def setUpClass(cls):
@@ -46,4 +46,14 @@ class CardDeckTestCase(unittest.TestCase):
         self.assertEqual(self.player.get_stake_amount(), 60)
         self.player.bid(20)
         self.assertEqual(self.player.get_stake_amount(), 60)
+
+    def test_cannot_bid_when_stake_is_empty(self):
+        for _ in range(20):
+            self.player.bid(3)
+
+        self.assertEqual(self.player.get_stake_amount(), 0)
+        self.assertTrue(self.player.bid(0))
+        self.assertFalse(self.player.bid(1))
+        self.assertFalse(self.player.bid(2))
+        self.assertFalse(self.player.bid(3))
     
