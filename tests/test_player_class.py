@@ -1,7 +1,7 @@
 import unittest
 from game_player import Player
 
-class CardDeckTestCase(unittest.TestCase):
+class PlayerClassTestCase(unittest.TestCase):
     def setUp(self):
         pass
 
