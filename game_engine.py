@@ -16,9 +16,10 @@ class BiddingEngine:
         self.reset()
     
     def execute_bidding_round(self):
+        bidding_order = self._get_bidding_order()
         max_bid = 0
         winning_bidder = None
-        for player in self.players:
+        for player in bidding_order:
             if player.get_bid_amount() is None:
                 player.set_bid(player.get_random_bid_amount())
             
@@ -30,6 +31,26 @@ class BiddingEngine:
                 break
 
         return max_bid, winning_bidder
+
+    def _get_bidding_order(self):
+        first_bidder = None
+        for player in self.players:
+            for card in player.cards:
+                if card.get_number()==3 and card.get_suit()=="hearts":
+                    first_bidder = player
+                    break 
+        
+        if first_bidder:
+            order = [first_bidder]
+            for player in self.players:
+                if player==first_bidder:
+                    continue
+                
+                order.append(player)
+            
+            return order
+        else:
+            return self.players
     
     def set_players(self, players):
         self.players = players
