@@ -71,3 +71,16 @@ class LandlordGameTestCase(unittest.TestCase):
         self.assertFalse(self.game.play())
         player1.set_stake_amount(60)
         self.assertEqual(player1.get_stake_amount(), 60)
+
+    def test_landlord_receives_the_wildcards_after_bidding_ends(self):
+        player1, player2, player3 = self.game.get_players()[0], self.game.get_players()[1], self.game.get_players()[2] 
+        player1.set_bid(3)
+        player2.set_bid(2)
+        player3.set_bid(2)
+        self.assertTrue(self.game._execute_bidding())
+        self.assertEqual(self.game.get_landlord(), player1)
+        self.assertTrue(len(self.game.get_landlord().cards), 17)
+        self.game.give_landlord_wildcards(self.wildcards)
+        self.assertTrue(len(self.game.get_landlord().cards), 20)
+        for player in self.game.get_peasants():
+            self.assertTrue(len(player.cards), 17)

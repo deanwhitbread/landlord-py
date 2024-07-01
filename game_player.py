@@ -40,6 +40,9 @@ class Player:
     def set_cards(self, cards):
         self.cards = cards
 
+    def add_wildcards(self, wildcards):
+        self.cards.extend(wildcards)
+
     def reset(self):
         self.hand = CardHand()
         self.cards = None

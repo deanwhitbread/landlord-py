@@ -33,6 +33,12 @@ class LandlordGame:
 
             return False
         else:
+            # reveal wildcards to all players at the end of bidding 
+            print(wildcards)
+
+            # add cards to the landlords cards.
+            self.give_landlord_wildcards(wildcards)
+
             # play round
 
             # round ends, prepare next round.
@@ -61,6 +67,9 @@ class LandlordGame:
 
     def get_players(self):
         return self.players
+
+    def give_landlord_wildcards(self, wildcards):
+        self.get_landlord().add_wildcards(wildcards)
 
     def reset(self):
         self.landlord = None 
