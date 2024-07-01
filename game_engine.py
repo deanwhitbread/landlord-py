@@ -1,15 +1,77 @@
 
 from game_player import Player
+from card_deck import CardDeck
 
 class LandlordGame:
-    def __init__(self):
-        pass
+    def __init__(self, players):
+        self.players = players
+        self.bidding_engine = BiddingEngine()
+        self.deck = CardDeck()
+        self.reset()
 
     def play(self):
-        pass
+        # check players have stake to bid
+        for player in self.get_players():
+            if player.get_stake_amount()==0:
+                # a player has ran out of stake to bid, game ends. 
+                return False
+
+        # deal cards to players
+        self.deck.shuffle()
+        p1, p2, p3 = self.get_players()[0], self.get_players()[1], self.get_players()[2]
+        p1_cards, p2_cards, p3_cards, wildcards = self.deck.deal()
+
+        p1.set_cards(p1_cards)
+        p2.set_cards(p2_cards)
+        p3.set_cards(p3_cards)
+
+        # execute the bidding round.
+        if not self._execute_bidding():
+            # all players have passed, new round begins
+            # round ends, prepare next round.
+            self.reset() 
+
+            return False
+        else:
+            # play round
+
+            # round ends, prepare next round.
+            self.reset()
+
+            return True
+
+    def _execute_bidding(self):
+        players_passing = [player.get_bid_amount()==0 for player in self.get_players()]
+        if all(players_passing):
+            return False 
+
+        self.stake, self.landlord = self.bidding_engine.execute_bidding_round()
+        self.peasants = [player for player in self.get_players() if player!=self.get_landlord()]
+
+        return True
+
+    def get_landlord(self):
+        return self.landlord
+
+    def get_peasants(self):
+        return self.peasants
+
+    def get_round_stake(self):
+        return self.stake
+
+    def get_players(self):
+        return self.players
 
     def reset(self):
-        pass 
+        self.landlord = None 
+        self.peasants = None
+        self.stake = 0 
+        for player in self.players:
+            player.reset()
+        
+        self.bidding_engine.reset()
+        self.bidding_engine.set_players(self.players)
+        self.deck.reset()
 
 class BiddingEngine:
     def __init__(self):
