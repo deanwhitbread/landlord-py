@@ -1,6 +1,6 @@
 
 from game_player import Player
-from card_deck import CardDeck
+from card_deck import CardDeck, Card
 
 class LandlordGame:
     def __init__(self, players):
