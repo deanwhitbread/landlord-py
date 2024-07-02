@@ -48,10 +48,9 @@ class LandlordGameTestCase(unittest.TestCase):
         self.assertNotIn(self.game.get_landlord(), self.game.get_peasants())
     
     def test_round_restarts_if_all_players_pass_on_bidding(self):
-        player1, player2, player3 = self.game.get_players()[0], self.game.get_players()[1], self.game.get_players()[2] 
-        player1.set_bid(0)
-        player2.set_bid(0)
-        player3.set_bid(0)
+        self.player1.set_bid(0)
+        self.player2.set_bid(0)
+        self.player3.set_bid(0)
         self.assertFalse(self.game._execute_bidding())
 
     def test_winning_bid_amount_is_in_the_round_pot(self):
@@ -65,22 +64,20 @@ class LandlordGameTestCase(unittest.TestCase):
         self.assertEqual(self.game.get_round_stake(), 0)
 
     def test_game_ends_when_one_players_stake_reaches_zero(self):
-        player1 = self.game.get_players()[0]        
-        player1.set_stake_amount(0)
-        self.assertEqual(player1.get_stake_amount(), 0)
+        self.player1.set_stake_amount(0)
+        self.assertEqual(self.player1.get_stake_amount(), 0)
         self.assertFalse(self.game.play())
-        player1.set_stake_amount(60)
-        self.assertEqual(player1.get_stake_amount(), 60)
+        self.player1.set_stake_amount(60)
+        self.assertEqual(self.player1.get_stake_amount(), 60)
 
     def test_landlord_receives_the_wildcards_after_bidding_ends(self):
-        player1, player2, player3 = self.game.get_players()[0], self.game.get_players()[1], self.game.get_players()[2] 
-        player1.set_bid(3)
-        player2.set_bid(2)
-        player3.set_bid(2)
+        self.player1.set_bid(3)
+        self.player2.set_bid(2)
+        self.player3.set_bid(2)
         self.assertTrue(self.game._execute_bidding())
-        self.assertEqual(self.game.get_landlord(), player1)
-        self.assertTrue(len(self.game.get_landlord().cards), 17)
+        self.assertEqual(self.game.get_landlord(), self.player1)
+        self.assertTrue(len(self.game.get_landlord().get_cards()), 17)
         self.game.give_landlord_wildcards(self.wildcards)
-        self.assertTrue(len(self.game.get_landlord().cards), 20)
+        self.assertTrue(len(self.game.get_landlord().get_cards()), 20)
         for player in self.game.get_peasants():
-            self.assertTrue(len(player.cards), 17)
+            self.assertTrue(len(player.get_cards()), 17)
