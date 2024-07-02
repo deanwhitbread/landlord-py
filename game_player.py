@@ -8,11 +8,15 @@ class Player:
         self.reset()
 
     def set_bid(self, amount):
-        if amount>3 or amount>self.stake:
-            return False 
-        
-        self.stake -= amount
-        self.bid = amount
+        if amount>3 or (amount>self.stake and not self.stake):
+            return False
+
+        if amount>self.stake:
+            self.bid = self.stake 
+        else:
+            self.bid = amount
+
+        self.stake -= self.bid
 
         return True
 
@@ -26,7 +30,8 @@ class Player:
         else:
             bid = 0
         
-        return bid if bid<self.get_stake_amount() else self.get_stake_amount()
+        self.set_bid(bid)
+        return self.get_bid_amount()
 
     def get_bid_amount(self):
         return self.bid

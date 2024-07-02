@@ -95,27 +95,15 @@ class PlayerClassTestCase(unittest.TestCase):
             self.assertTrue(bid==3 or bid==2 or bid==1 or bid==SKIP_BID)
 
     def test_get_random_bid_amount_function_returns_bid_that_does_not_exceed_players_stake(self):
-        for _ in range(19):
-            self.player.set_bid(3)
-
-        self.assertEqual(self.player.get_stake_amount(), 3)
-        bid = self.player.get_random_bid_amount()
-        self.assertTrue(self.player.get_stake_amount()>=bid)
-        
-        self.player.set_bid(1)
-        self.assertEqual(self.player.get_stake_amount(), 2)
-        bid = self.player.get_random_bid_amount()
-        self.assertTrue(self.player.get_stake_amount()>=bid)
-
-        self.player.set_bid(1)
+        self.player.set_stake_amount(1)
         self.assertEqual(self.player.get_stake_amount(), 1)
-        bid = self.player.get_random_bid_amount()
-        self.assertTrue(self.player.get_stake_amount()>=bid)
-
-        self.player.set_bid(1)
+        while True:
+            bid = self.player.get_random_bid_amount()
+            if bid>0:
+                break
+        self.assertEqual(bid, 1)
+        self.assertEqual(self.player.get_bid_amount(), bid)
         self.assertEqual(self.player.get_stake_amount(), 0)
-        bid = self.player.get_random_bid_amount()
-        self.assertTrue(self.player.get_stake_amount()>=bid)
 
     def test_add_wildcards_function_adds_cards_to_the_players_cards(self):
         cards1, cards2, cards3, wildcards = self.deck.deal()
@@ -123,5 +111,11 @@ class PlayerClassTestCase(unittest.TestCase):
         self.assertEqual(len(self.player.cards), 17)
         self.player.add_wildcards(wildcards)
         self.assertEqual(len(self.player.cards), 20)
-         
+
+    def test_bid_matches_stake_when_bid_exceeds_stake_amount_when_stake_is_low(self):
+        self.player.set_stake_amount(2)
+        self.assertEqual(self.player.get_stake_amount(), 2)
+        self.player.set_bid(3)
+        self.assertEqual(self.player.get_bid_amount(), 2)
+        self.assertEqual(self.player.get_stake_amount(), 0)
         
