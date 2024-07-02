@@ -74,7 +74,7 @@ class Player:
         Args:
             cards - A list of Card objects that represent the players' cards.    
         '''
-        self.cards.extend(wildcards)
+        self.get_cards().extend(wildcards)
 
     def get_cards(self) -> list[Card]:
         '''Return the players' cards.'''

@@ -51,7 +51,8 @@ class LandlordGameTestCase(unittest.TestCase):
         self.player1.set_bid(0)
         self.player2.set_bid(0)
         self.player3.set_bid(0)
-        self.assertFalse(self.game._execute_bidding())
+        self.assertTrue(self.game.all_players_passed_during_bidding())
+        self.assertFalse(self.game.has_game_ended())
 
     def test_winning_bid_amount_is_in_the_round_pot(self):
         self.assertEqual(self.game.get_round_stake(), 0)
@@ -60,13 +61,16 @@ class LandlordGameTestCase(unittest.TestCase):
     
     def test_round_pot_resets_after_round_ends(self):
         self.assertEqual(self.game.get_round_stake(), 0)
+        self.player1.set_bid(1)
+        self.player2.set_bid(0)
+        self.player3.set_bid(0)
         self.assertTrue(self.game.play())
         self.assertEqual(self.game.get_round_stake(), 0)
 
     def test_game_ends_when_one_players_stake_reaches_zero(self):
         self.player1.set_stake_amount(0)
         self.assertEqual(self.player1.get_stake_amount(), 0)
-        self.assertFalse(self.game.play())
+        self.assertTrue(self.game.has_game_ended())
         self.player1.set_stake_amount(60)
         self.assertEqual(self.player1.get_stake_amount(), 60)
 
@@ -81,3 +85,6 @@ class LandlordGameTestCase(unittest.TestCase):
         self.assertTrue(len(self.game.get_landlord().get_cards()), 20)
         for player in self.game.get_peasants():
             self.assertTrue(len(player.get_cards()), 17)
+
+    def test_has_game_ended_returns_false_when_players_have_stake_remaining(self):
+        self.assertFalse(self.game.has_game_ended())
