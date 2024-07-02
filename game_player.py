@@ -8,29 +8,29 @@ class Player:
         self.reset()
 
     def set_bid(self, amount):
-        if amount>3 or (amount>self.stake and not self.stake):
+        if amount>3 or (amount>self.get_stake_amount() and not self.get_stake_amount()):
             return False
 
-        if amount>self.stake:
-            self.bid = self.stake 
+        if amount>self.get_stake_amount():
+            self.bid = self.get_stake_amount() 
         else:
             self.bid = amount
 
-        self.stake -= self.bid
+        self.set_stake_amount(self.get_stake_amount() - self.get_bid_amount())
 
         return True
 
     def get_random_bid_amount(self):
-        if random.random()>0.85:
-            bid = 3
-        elif random.random()>0.5:
-            bid = 2
-        elif random.random()>0.2:
-            bid = 1
+        probabilty = random.random()
+        if probabilty>0.85:
+            self.set_bid(3)
+        elif probabilty>0.5:
+            self.set_bid(2)
+        elif probabilty>0.2:
+            self.set_bid(1)
         else:
-            bid = 0
+            self.set_bid(0)
         
-        self.set_bid(bid)
         return self.get_bid_amount()
 
     def get_bid_amount(self):
@@ -47,6 +47,9 @@ class Player:
 
     def add_wildcards(self, wildcards):
         self.cards.extend(wildcards)
+
+    def get_cards(self):
+        return self.cards
 
     def reset(self):
         self.hand = CardHand()
