@@ -1,6 +1,7 @@
 
 from game_player import Player
 from card_deck import CardDeck, Card
+import random
 
 class LandlordGame:
     def __init__(self, players):
@@ -80,6 +81,10 @@ class LandlordGame:
             wildcards - A list of Card objects representing the round's wildcards.
         '''
         self.get_landlord().add_wildcards(wildcards)
+
+    def get_play_order(self):
+        random.shuffle(self.get_peasants())
+        return self.get_peasants() + [self.get_landlord()]
 
     def has_game_ended(self) -> bool:
         '''Returns True if there is a player that has no more stake to bid, False otherwise.'''
