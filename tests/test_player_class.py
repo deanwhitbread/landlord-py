@@ -38,6 +38,7 @@ class PlayerClassTestCase(unittest.TestCase):
     def test_stake_decreases_when_valid_bid_submitted(self):
         self.assertEqual(self.player.get_stake_amount(), 60)
         self.player.set_bid(0)
+        self.assertTrue(self.player.has_passed_bidding())
         self.assertEqual(self.player.get_stake_amount(), 60)
         self.player.set_bid(1)
         self.assertEqual(self.player.get_stake_amount(), 59)

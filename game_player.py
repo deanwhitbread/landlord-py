@@ -80,6 +80,10 @@ class Player:
         '''Return the players' cards.'''
         return self.cards
 
+    def has_passed_bidding(self) -> bool:
+        '''Returns True if the players bid is zero, False otherwise.'''
+        return self.get_bid_amount()==0
+
     def reset(self):
         '''Resets the players' hand played, cards being held by the player,
         and their bid for the round.'''
