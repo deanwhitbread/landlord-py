@@ -67,9 +67,15 @@ class CardHand:
 
     def set_random_hand(self, cards):
         if type(cards)==list and len(cards)==0:
-            raise ValueError
+            raise ValueError("The list of Card objects is empty. The cards parameter must be a list of Card objects with at least one object.")
         if cards is None or (type(cards)==list and type(cards[0])!=Card):
-            raise TypeError
+            if cards is None:
+                card_type = None
+            else:
+                card_type = type(cards[0])
+
+            raise TypeError(f"The cards attribute is of type '{card_type}' when it should be a list of Card objects.")
+
         
         prob_play_single_card = 0.3
         if len(cards)==1 or random.random()<prob_play_single_card:
