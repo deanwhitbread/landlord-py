@@ -115,4 +115,44 @@ class PlayerClassTestCase(unittest.TestCase):
         self.player.set_bid(3)
         self.assertEqual(self.player.get_bid_amount(), 2)
         self.assertEqual(self.player.get_stake_amount(), 0)
+
+    def test_player_can_randomly_play_a_valid_hand(self):
+        c1, c2, c3, wildcards = self.deck.deal()
+        self.player.set_cards(c1)
+        self.assertEqual(len(self.player.get_hand()), 0)
+        self.player.set_random_hand()
+        self.assertNotEqual(len(self.player.get_hand()), 0)
+
+    def test_play_hand_function_returns_the_hand_being_played(self):
+        hands = [[3,3], [5,5,5,9]] 
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            self.player.set_hand(hand)
+            self.assertEqual(self.player.play_hand(), hand)
+
+    def test_play_hand_function_choses_random_hand_when_no_hand_set(self):
+        c1, c2, c3, wildcards = self.deck.deal()
+        self.player.set_cards(c1)
+        self.assertEqual(len(self.player.get_hand()), 0)
+        self.player.set_random_hand()
+        self.player.play_hand()
+        self.assertNotEqual(len(self.player.get_hand()), 0)
+    
+    def test_player_cannot_play_an_invalid_hand(self):
+        hands = [[1,2,3,4,5,6,7], [13,13,13,1,1,1,2,2,2], [4,4,4,4,14,15], 
+            [5,5,5,13,14]] 
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            self.player.set_hand(hand)
+            self.assertEqual(len(self.player.get_hand()), len(hand))
+            self.assertFalse(self.player.play_hand())
+            self.assertEqual(len(self.player.get_hand()), 0)
+
+    def test_get_hand_returns_the_players_choosen_hand(self):
+        hand = [11,11,12,12,13,13]
+        self.player.set_hand(hand) 
+        self.assertTrue(self.player.get_hand(), hand)
+
+    def test_get_hand_is_empty_when_player_has_not_chosen_hand(self):
+        self.assertEqual(len(self.player.get_hand()), 0)
         

@@ -8,6 +8,16 @@ class Player:
         self.set_stake_amount(60)
         self.reset()
 
+    def play_hand(self):
+        if not self.hand.play():
+            self.hand.reset()
+            return False
+        
+        if not self.get_hand():
+            self.set_random_hand()        
+        
+        return self.get_hand()
+
     def set_bid(self, amount: int) -> bool:
         '''Set the players' bid to the amount provided. If the bid is valid 
         but exceeds the players' total stake, the total state is returned.
@@ -83,6 +93,15 @@ class Player:
     def has_passed_bidding(self) -> bool:
         '''Returns True if the players bid is zero, False otherwise.'''
         return self.get_bid_amount()==0
+
+    def get_hand(self):
+        return self.hand.get_hand()
+
+    def set_hand(self, hand):
+        self.hand.select(hand)
+
+    def set_random_hand(self):
+        self.hand.set_random_hand(self.get_cards())
 
     def reset(self):
         '''Resets the players' hand played, cards being held by the player,
