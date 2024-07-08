@@ -74,7 +74,8 @@ class CardHand:
             else:
                 card_type = type(cards[0])
 
-            raise TypeError(f"The cards attribute is of type '{card_type}' when it should be a list of Card objects.")
+            msg = f"The cards attribute is of type '{card_type}' when it should be a list of Card objects."
+            raise TypeError(msg)
 
         
         prob_play_single_card = 0.3
