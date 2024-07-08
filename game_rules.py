@@ -175,7 +175,7 @@ def is_chain_in_sequence(number_freq: dict[int:int], cards_in_hand: int, card_fr
     '''
     max_card_number = max(number_freq.keys())
     min_card_number = max_card_number-int(cards_in_hand/card_freq)+1
-    for i in range(min_card_number+1, max_card_number+1):
+    for i in range(min_card_number, max_card_number+1):
         if i not in number_freq.keys() or number_freq[i]!=card_freq:
             return False
 
