@@ -60,8 +60,7 @@ class TestHelpers:
         return [[3,3],
             [6,6], 
             [1,1],
-            [2,2],
-            [14,15]]
+            [2,2]]
 
     def get_invalid_pair_card_hand(self):
         '''Returns a 2-dimensional list of integers representing the invalid
