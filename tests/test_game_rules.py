@@ -240,7 +240,8 @@ class GameRulesTestCase(unittest.TestCase):
             self.assertFalse(rules.contains_pair_hand(number_freq)) 
 
     def test_valid_contains_trio_hand_function(self):
-        hands = self.hlpr.get_valid_trio_with_solo_hands() 
+        hands = self.hlpr.get_valid_trio_chain_card_hand()
+        hands += self.hlpr.get_valid_trio_with_solo_hands() 
         hands += self.hlpr.get_valid_trio_with_pair_hands()
         hands += self.hlpr.get_valid_airplane_with_solo_hands()
         hands += self.hlpr.get_valid_airplane_with_pair_hands()
@@ -260,8 +261,7 @@ class GameRulesTestCase(unittest.TestCase):
             self.assertFalse(rules.contains_trio_hand(number_freq)) 
 
     def test_valid_contains_trio_chain_hand_function(self):
-        hands = self.hlpr.get_valid_trio_with_solo_hands() 
-        hands += self.hlpr.get_valid_trio_with_pair_hands()
+        hands = self.hlpr.get_valid_trio_chain_card_hand()
         hands += self.hlpr.get_valid_airplane_with_solo_hands()
         hands += self.hlpr.get_valid_airplane_with_pair_hands()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
@@ -272,6 +272,8 @@ class GameRulesTestCase(unittest.TestCase):
     def test_invalid_contains_trio_chain_hand_function(self):
         hands = self.hlpr.get_valid_solo_card_chain_hands()
         hands += self.hlpr.get_valid_pair_card_hand()
+        hands += self.hlpr.get_valid_trio_with_solo_hands()
+        hands += self.hlpr.get_valid_trio_with_pair_hands()
         hands += self.hlpr.get_valid_bomb_card_hand()
         hands += self.hlpr.get_valid_rocket_card_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)

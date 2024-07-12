@@ -91,16 +91,40 @@ def is_trio_chain(number_freq: dict[int:int]) -> bool:
     return is_chain_in_sequence(freq, cards_in_hand, 3)
 
 def is_trio_with_solo(number_freq):
-    pass 
+    return sum(number_freq.values())==4 and contains_solo_hand(number_freq) and contains_trio_hand(number_freq)
 
 def is_trio_with_pair(number_freq):
-    pass 
+    return sum(number_freq.values())==5 and contains_pair_hand(number_freq) and contains_trio_hand(number_freq) 
 
 def is_airplane_with_solo(number_freq):
-    pass 
+    if contains_solo_hand(number_freq) and contains_trio_chain_hand(number_freq):
+        solos_needed = 0
+        for val in number_freq.values():
+            if val==3:
+                solos_needed += 1
+            elif val==1:
+                solos_needed -= 1
+            else:
+                return False 
+        
+        return solos_needed==0
+    else:
+        return  False
 
 def is_airplane_with_pair(number_freq):
-    pass
+    if contains_pair_hand(number_freq) and contains_trio_chain_hand(number_freq):
+        pairs_needed = 0
+        for val in number_freq.values():
+            if val==3:
+                pairs_needed += 1
+            elif val==2:
+                pairs_needed -= 1
+            else:
+                return False 
+        
+        return pairs_needed==0
+    else:
+        return  False
 
 def is_bomb(number_freq: dict[int:int]) -> bool:
     '''Return True if the hand being played is a bomb hand, False otherwise.
@@ -141,10 +165,15 @@ def contains_pair_hand(number_freq: dict[int:int]) -> bool:
         not does_two_preceed_three_in_trio_chain(number_freq))
 
 def contains_trio_hand(number_freq):
-    pass
+    return 3 in set(number_freq.values())
 
 def contains_trio_chain_hand(number_freq):
-    pass
+    trio_freq = dict()
+    for key, val in number_freq.items():
+        if val==3:
+            trio_freq[key] = val
+
+    return len(trio_freq.keys())>1 and is_trio_chain(trio_freq)
 
 def is_chain(number_freq: dict[int:int]) -> bool:
     '''Return True if the hand being played is a chain hand, False otherwise.
@@ -269,7 +298,7 @@ def get_hand_category(number_freq):
         return const.CARD_CATEGORY.SOLO
     elif is_solo_chain(number_freq):
         return const.CARD_CATEGORY.SOLO_CHAIN
-    elif is_pair(number_freq):
+    elif is_pair(number_freq) and not is_rocket(number_freq):
         return const.CARD_CATEGORY.PAIR
     elif is_pair_chain(number_freq):
         return const.CARD_CATEGORY.PAIR_CHAIN
