@@ -2,6 +2,7 @@ import unittest
 from card_hand import CardHand, Card
 from card_deck import CardDeck
 from tests import helpers
+from misc import constants as const
 
 class CardHandTestCase(unittest.TestCase):
     def setUp(self):
@@ -162,3 +163,19 @@ class CardHandTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.hand.set_random_hand(list())
     
+    def test_get_card_category_function_returns_category(self):
+        hands = [[11],[3,4,5,6,7,8],[8,8],[11,11,12,12,13,13],[2,2,2],[4,4,4,5,5,5,6,6,6], 
+            [5,5,5,12],[10,10,10,1,1],[3,3,3,4,4,4,5,5,5,7,9,11],[12,12,12,13,13,13,1,1,10,10],
+            [7,7,7,7],[14,15]]
+        category = [[const.CARD_CATEGORY.SOLO],[const.CARD_CATEGORY.SOLO_CHAIN],
+            [const.CARD_CATEGORY.PAIR],[const.CARD_CATEGORY.PAIR_CHAIN],
+            [const.CARD_CATEGORY.TRIO],[const.CARD_CATEGORY.TRIO_CHAIN],
+            [const.CARD_CATEGORY.TRIO_WITH_SOLO],[const.CARD_CATEGORY.TRIO_WITH_PAIR],
+            [const.CARD_CATEGORY.AIRPLANE_WITH_SOLO],
+            [const.CARD_CATEGORY.AIRPLANE_WITH_PAIR],
+            [const.CARD_CATEGORY.BOMB],[const.CARD_CATEGORY.ROCKET]]
+
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for i in range(len(hands)):
+            hand = hands[i]
+            self.assertEqual(self.hand.get_hand_category(hand), category[i].pop())

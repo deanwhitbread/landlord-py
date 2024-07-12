@@ -2,6 +2,7 @@ from card_deck import Card
 import game_rules as rules
 from collections import Counter
 import random
+import game_rules as rules
 
 class CardHand:
     def __init__(self):
@@ -250,6 +251,13 @@ class CardHand:
 
     def get_hand(self):
         return self.current_hand
+
+    def get_hand_category(self, hand):
+        number_freq = dict()
+        for card in hand:
+            number_freq[card.get_number()] = number_freq.get(card.get_number(), 0) + 1
+        
+        return rules.get_hand_category(number_freq)  
 
     def reset(self):
         '''Clear the player's hand, removing all selected cards.'''
