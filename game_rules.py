@@ -1,4 +1,6 @@
 
+from misc import constants as const
+
 ''' Valid Card Hands Methods '''
 def is_solo(number_freq: dict[int:int]) -> bool:
     '''Return True if the hand being played is a solo hand, False otherwise. 
@@ -88,6 +90,18 @@ def is_trio_chain(number_freq: dict[int:int]) -> bool:
 
     return is_chain_in_sequence(freq, cards_in_hand, 3)
 
+def is_trio_with_solo(number_freq):
+    pass 
+
+def is_trio_with_pair(number_freq):
+    pass 
+
+def is_airplane_with_solo(number_freq):
+    pass 
+
+def is_airplane_with_pair(number_freq):
+    pass
+
 def is_bomb(number_freq: dict[int:int]) -> bool:
     '''Return True if the hand being played is a bomb hand, False otherwise.
 
@@ -125,6 +139,12 @@ def contains_pair_hand(number_freq: dict[int:int]) -> bool:
     '''
     return (each_trio_has_matching_non_trio_hand(number_freq, is_solo=False) and 
         not does_two_preceed_three_in_trio_chain(number_freq))
+
+def contains_trio_hand(number_freq):
+    pass
+
+def contains_trio_chain_hand(number_freq):
+    pass
 
 def is_chain(number_freq: dict[int:int]) -> bool:
     '''Return True if the hand being played is a chain hand, False otherwise.
@@ -243,3 +263,32 @@ def does_two_preceed_three_in_trio_chain(number_freq):
             trio_hands.add(key)
 
     return 2 in trio_hands and 3 in trio_hands
+
+def get_hand_category(number_freq):
+    if is_solo(number_freq):
+        return const.CARD_CATEGORY.SOLO
+    elif is_solo_chain(number_freq):
+        return const.CARD_CATEGORY.SOLO_CHAIN
+    elif is_pair(number_freq):
+        return const.CARD_CATEGORY.PAIR
+    elif is_pair_chain(number_freq):
+        return const.CARD_CATEGORY.PAIR_CHAIN
+    elif is_trio(number_freq):
+        return const.CARD_CATEGORY.TRIO
+    elif is_trio_chain(number_freq):
+        return const.CARD_CATEGORY.TRIO_CHAIN
+    elif is_bomb(number_freq):
+        return const.CARD_CATEGORY.BOMB
+    elif is_rocket(number_freq):
+        return const.CARD_CATEGORY.ROCKET
+    elif is_trio_with_solo(number_freq):
+        return const.CARD_CATEGORY.TRIO_WITH_SOLO
+    elif is_trio_with_pair(number_freq):
+        return const.CARD_CATEGORY.TRIO_WITH_PAIR
+    elif is_airplane_with_solo(number_freq):
+        return const.CARD_CATEGORY.AIRPLANE_WITH_SOLO
+    elif is_airplane_with_pair(number_freq):
+        return const.CARD_CATEGORY.AIRPLANE_WITH_PAIR
+    else:
+        msg = f"The card sequence {[key for key, val in number_freq.items() for _ in range(val) ]} is not a recognised category."
+        raise RuntimeError(msg)      
