@@ -1,6 +1,7 @@
 from card_hand import CardHand, Card
 import game_rules as rules
 import random 
+from collections import defaultdict
 
 class Player:
     def __init__(self):
@@ -9,12 +10,15 @@ class Player:
         self.reset()
 
     def play_hand(self):
-        if not self.hand.play():
+        if self.get_hand() and not self.hand.play():
             self.hand.reset()
             return False
-        
+
         if not self.get_hand():
-            self.set_random_hand()        
+            self.set_random_hand()   
+        
+        self.hand.calculate_hand_score(self.hand.get_hand())
+        self.remove_cards(self.get_hand())
         
         return self.get_hand()
 
@@ -100,8 +104,25 @@ class Player:
     def set_hand(self, hand):
         self.hand.select(hand)
 
-    def set_random_hand(self):
-        self.hand.set_random_hand(self.get_cards())
+    def set_random_hand(self, previous_hand=None):
+        self.hand.set_random_hand(self.get_cards(), previous_hand)
+
+    def remove_cards(self, hand):
+        card_values_freq_map = defaultdict(int)
+        for card in hand:
+            card_values_freq_map[card.get_number()] += 1
+
+        new_cards = list()
+        for card in self.get_cards():
+            if card.get_number() in card_values_freq_map.keys():
+                if not card_values_freq_map[card.get_number()]:
+                    new_cards.append(card)
+                else:
+                    card_values_freq_map[card.get_number()] -= 1
+            else:
+                new_cards.append(card)
+
+        self.set_cards(new_cards)
 
     def reset(self):
         '''Resets the players' hand played, cards being held by the player,

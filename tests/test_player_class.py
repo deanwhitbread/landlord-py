@@ -124,11 +124,14 @@ class PlayerClassTestCase(unittest.TestCase):
         self.assertNotEqual(len(self.player.get_hand()), 0)
 
     def test_play_hand_function_returns_the_hand_being_played(self):
+        cards = [[3,3,6,8,11,13,2,2], [3,4,5,5,5,9,13,14,15]]
+        cards = self.hlpr.convert_hand_numbers_to_card_objects(cards)
         hands = [[3,3], [5,5,5,9]] 
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
-        for hand in hands:
-            self.player.set_hand(hand)
-            self.assertEqual(self.player.play_hand(), hand)
+        for i in range(len(cards)):
+            self.player.set_cards(cards[i])
+            self.player.set_hand(hands[i])
+            self.assertEqual(self.player.play_hand(), hands[i])
 
     def test_play_hand_function_choses_random_hand_when_no_hand_set(self):
         c1, c2, c3, wildcards = self.deck.deal()
@@ -155,4 +158,47 @@ class PlayerClassTestCase(unittest.TestCase):
 
     def test_get_hand_is_empty_when_player_has_not_chosen_hand(self):
         self.assertEqual(len(self.player.get_hand()), 0)
+
+    def test_set_random_hand_function_returns_hand_in_the_same_category_as_previous_hand(self):
+        opponent_hands = [[3,3,4,4,5,5], [5,6,7,8,9], [11,11,11,8], [6]] 
+        opponent_hands = self.hlpr.convert_hand_numbers_to_card_objects(opponent_hands)
+        player_cards = [[3,3,7,7,8,8,9,9,12,13,2], [3,3,3,4,9,10,11,12,13,13,1,15], [3,5,5,6,6,7,7,13,13,13], [3,3,3,4,4,11,2]]
+        player_cards = self.hlpr.convert_hand_numbers_to_card_objects(player_cards)
+        for i in range(len(opponent_hands)):
+            op_hand = opponent_hands[i]
+            op_hand_category = self.player.hand.get_hand_category(op_hand)
+            self.player.set_cards(player_cards[i])
+            player_hand = self.player.set_random_hand(op_hand)
+            player_hand_category = self.player.hand.get_hand_category(op_hand)
+            self.assertEqual(op_hand_category, player_hand_category)
+    
+    def test_set_random_hand_function_passes_when_player_does_not_have_stronger_hand(self):
+        opponent_hands = [[10,10,10], [5,5,6,6,7,7],[2,2]] 
+        opponent_hands = self.hlpr.convert_hand_numbers_to_card_objects(opponent_hands)
+        player_cards = [[3,5,5,5,8,11,12,1,1,1,14], [3,4,4,4,4,11,12,2,2], [5,5,5,6,6,12,1,14,15]]
+        player_cards = self.hlpr.convert_hand_numbers_to_card_objects(player_cards)
+        for i in range(len(opponent_hands)):
+            op_hand = opponent_hands[i]
+            self.player.set_cards(player_cards[i])
+            player_hand = self.player.set_random_hand(op_hand)
+            self.assertIsNone(player_hand)
+
+    def test_remove_cards_function_removes_cards_from_players_deck(self):
+        cards = [[3,4,5,6,7,8,10,10,10,2,14,15]]
+        cards = self.hlpr.convert_hand_numbers_to_card_objects(cards).pop()
+        self.player.set_cards(cards)
+        self.assertEqual(len(self.player.get_cards()), 12)
+
+        hand = self.player.get_cards()[:6]
+        self.player.remove_cards(hand)
+        self.assertEqual(len(self.player.get_cards()), 6)
+        
+        hand = self.player.get_cards()[:4]
+        self.player.remove_cards(hand)
+        self.assertEqual(len(self.player.get_cards()), 2)
+
+        hand = self.player.get_cards()[:2]
+        self.player.remove_cards(hand)
+        self.assertEqual(len(self.player.get_cards()), 0)
+    
         
