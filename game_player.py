@@ -9,13 +9,13 @@ class Player:
         self.set_stake_amount(60)
         self.reset()
 
-    def play_hand(self):
+    def play_hand(self, previous_hand=None):
         if self.get_hand() and not self.hand.play():
             self.hand.reset()
             return False
 
         if not self.get_hand():
-            self.set_random_hand()   
+            self.set_random_hand(previous_hand)   
         
         self.hand.calculate_hand_score(self.hand.get_hand())
         self.remove_cards(self.get_hand())
