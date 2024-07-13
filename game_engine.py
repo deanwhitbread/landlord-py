@@ -2,6 +2,7 @@
 from game_player import Player
 from card_deck import CardDeck, Card
 import random
+import game_rules as rules
 
 class LandlordGame:
     def __init__(self, players):
@@ -14,6 +15,7 @@ class LandlordGame:
         self.players = players
         self.bidding_engine = BiddingEngine()
         self.deck = CardDeck()
+        self.gamplay_engine = GameplayEngine()
         self.reset()
 
     def play(self) -> bool:
@@ -39,6 +41,8 @@ class LandlordGame:
             self.give_landlord_wildcards(wildcards)
 
             # play round
+            # get play order
+            self.gamplay_engine.get_play_order(self.get_landlord(), self.get_peasants())
 
             # round ends, prepare next round.
             self.reset()
@@ -81,10 +85,6 @@ class LandlordGame:
             wildcards - A list of Card objects representing the round's wildcards.
         '''
         self.get_landlord().add_wildcards(wildcards)
-
-    def get_play_order(self):
-        random.shuffle(self.get_peasants())
-        return self.get_peasants() + [self.get_landlord()]
 
     def has_game_ended(self) -> bool:
         '''Returns True if there is a player that has no more stake to bid, False otherwise.'''
@@ -185,3 +185,46 @@ class BiddingEngine:
     def reset(self):
         '''Resets the bidding engine, ready for a new round of landlord.'''
         self.players = None
+
+class GameplayEngine:
+    def __init__(self):
+        self.reset() 
+
+    def play_round(self, order, stake): 
+        previous_hand, previous_player_to_play_hand = None, None
+        ptr = -1
+        while len(order[ptr].get_cards())!=0:
+            player = order[ptr]
+            
+            # check if both players skipped. 
+            if previous_player_to_play_hand == player:
+                previous_hand = None
+
+            if previous_hand:
+                player.set_random_hand(previous_hand)
+            else:
+                player.set_random_hand()
+            
+            if player.get_hand():
+                previous_hand, previous_player_to_play_hand = player.get_hand(), player 
+                player.play_hand()
+                player.hand.reset()
+            else:
+                # player skips
+                pass
+
+            # check is player has won
+            if len(player.get_cards())==0:
+                break                
+            
+            # choose next player
+            ptr = (ptr-1)%3
+        
+        return previous_player_to_play_hand, stake
+    
+    def get_play_order(self, landlord, peasants):
+        return peasants + [landlord]
+
+    def reset(self):
+        self.landlord = None
+        self.peasants = None
