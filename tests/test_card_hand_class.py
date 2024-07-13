@@ -179,3 +179,32 @@ class CardHandTestCase(unittest.TestCase):
         for i in range(len(hands)):
             hand = hands[i]
             self.assertEqual(self.hand.get_hand_category(hand), category[i].pop())
+
+    def test_set_random_hand_function_with_category_set_returns_stronger_hand_in_the_same_category(self):
+        opponent_hands = [[3,3,4,4,5,5], [5,6,7,8,9], [11,11,11,3,3], [6]] 
+        opponent_hands = self.hlpr.convert_hand_numbers_to_card_objects(opponent_hands)
+        player_cards = [[3,3,7,7,8,8,9,9,12,13,2], [3,3,3,4,9,10,11,12,13,13,1,15], [3,5,5,6,6,7,7,13,13,13], [3,3,3,4,4,11,2]]
+        player_cards = self.hlpr.convert_hand_numbers_to_card_objects(player_cards)
+        for i in range(len(opponent_hands)):
+            op_hand = opponent_hands[i]
+            op_hand_category = self.hand.get_hand_category(op_hand)
+            self.hand.calculate_hand_score(op_hand)
+            op_hand_score = self.hand.hand_score
+            player_hand = self.hand.set_random_hand(player_cards[i], op_hand)
+            player_hand_category = self.hand.get_hand_category(player_hand)
+            self.assertEqual(player_hand_category, op_hand_category) 
+            self.hand.calculate_hand_score(player_hand)
+            player_hand_score = self.hand.hand_score
+            self.assertTrue(player_hand_score>op_hand_score)
+            self.hand.reset()
+
+    def test_set_random_hand_function_returns_none_when_category_set_but_no_hands_in_that_category(self):
+        opponent_hands = [[3,3,4,4,5,5], [5,6,7,8,9], [11,11,11,8], [6]] 
+        opponent_hands = self.hlpr.convert_hand_numbers_to_card_objects(opponent_hands)
+        player_cards = [[4,4,5,5,8,8,1,15], [3,4,5,6,7,8,9,13,2,2], [3,3,3,5,10,10,1,2], [3,3,4,4,5,5]]
+        player_cards = self.hlpr.convert_hand_numbers_to_card_objects(player_cards)
+        for i in range(len(opponent_hands)):
+            player_hand = self.hand.set_random_hand(player_cards[i], opponent_hands[i])
+            self.assertEqual(len(player_hand), 0) 
+            self.hand.reset()
+    

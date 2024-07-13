@@ -3,6 +3,7 @@ import game_rules as rules
 from collections import Counter
 import random
 import game_rules as rules
+from misc import constants as const
 
 class CardHand:
     def __init__(self):
@@ -52,10 +53,35 @@ class CardHand:
         Args:
             hand - A list of Card objects representing the players' hand.
         '''
+        
         number_freq = self.get_card_number_frequency_map(hand)
-        multiplier = 2 if rules.is_bomb(number_freq) or rules.is_rocket(number_freq) else 1
+        category = rules.get_hand_category(number_freq)
+        if category==const.CARD_CATEGORY.SOLO or category==const.CARD_CATEGORY.SOLO_CHAIN:
+            score = sum([card.get_points() for card in hand])
+        elif category==const.CARD_CATEGORY.PAIR or category==const.CARD_CATEGORY.PAIR_CHAIN:
+            score = sum([card.get_points() for card in hand]) * 2
+        elif category==const.CARD_CATEGORY.TRIO:
+            score = sum([card.get_points() for card in hand]) * 3
+        elif (category==const.CARD_CATEGORY.TRIO_WITH_SOLO or 
+            category==const.CARD_CATEGORY.TRIO_WITH_PAIR or 
+            category==const.CARD_CATEGORY.TRIO_CHAIN or 
+            category==const.CARD_CATEGORY.AIRPLANE_WITH_SOLO or 
+            category==const.CARD_CATEGORY.AIRPLANE_WITH_PAIR):
+                
+                points = 0
+                for card in hand:
+                    if number_freq[card.get_number()]==3: 
+                        points += card.get_points()
 
-        self.hand_score = int(sum(card.get_points() for card in hand) * multiplier)
+                score = points  
+        elif category==const.CARD_CATEGORY.BOMB:
+            score = sum([card.get_points() for card in hand]) * 5
+        else:
+            score = sum([card.get_points() for card in hand]) * 10
+        
+        self.hand_score = score
+
+        return self.hand_score
 
     def get_card_number_frequency_map(self, hand: list[Card]) -> Counter[int:int]:
         '''Return a hash map mapping card numbers in the hand to the frequency the numbers
@@ -66,7 +92,7 @@ class CardHand:
         '''
         return Counter([card.get_number() for card in hand])
 
-    def set_random_hand(self, cards):
+    def set_random_hand(self, cards, previous_hand=None):
         if type(cards)==list and len(cards)==0:
             raise ValueError("The list of Card objects is empty. The cards parameter must be a list of Card objects with at least one object.")
         if cards is None or (type(cards)==list and type(cards[0])!=Card):
@@ -78,11 +104,14 @@ class CardHand:
             msg = f"The cards attribute is of type '{card_type}' when it should be a list of Card objects."
             raise TypeError(msg)
 
-        
-        prob_play_single_card = 0.3
-        if len(cards)==1 or random.random()<prob_play_single_card:
-            self.select(random.choice([[card] for card in cards]))
-            return self.get_hand()
+        if previous_hand:
+            category = self.get_hand_category(previous_hand)
+            previous_hand_score = self.calculate_hand_score(previous_hand)
+        else:
+            prob_play_single_card = 0.3
+            if len(cards)==1 or random.random()<prob_play_single_card:
+                self.select(random.choice([[card] for card in cards]))
+                return self.get_hand()
             
 
         freq_map = self.get_card_number_frequency_map(cards)
@@ -133,6 +162,25 @@ class CardHand:
             all_valid_hands.extend(pair_hands)
         if trio_hands:
             all_valid_hands.extend(trio_hands)
+
+            # add trio with solo cards
+            trio_with_solo_hands = list()
+            for i in range(len(trio_hands)):
+                for j in range(len(cards)):
+                    if cards[j].get_number()!=trio_hands[i][0].get_number():
+                        trio_with_solo = trio_hands[i] + [cards[j]]
+                        trio_with_solo_hands.append(trio_with_solo)
+            all_valid_hands.extend(trio_with_solo_hands)
+
+            if pair_hands:
+                trio_with_pair_hands = list()
+                # add all trio with pair hands
+                for i in range(len(trio_hands)):
+                    for j in range(len(pair_hands)):
+                        if pair_hands[j][0].get_number()!=trio_hands[i][0].get_number():
+                            trio_with_pair = trio_hands[i] + pair_hands[j]
+                            trio_with_pair_hands.append(trio_with_pair)
+                all_valid_hands.extend(trio_with_pair_hands)
 
         # find trio chain sequences
         trio_chain_hands = list()
@@ -200,6 +248,33 @@ class CardHand:
                     hand = [card for pair in chain_cards for card in pair]
                     pair_chain_hands.append(hand)
 
+        # sliding window to find solo chains.
+        solo_chain_hands = list()
+        sequence = [card.get_number() for card in cards]
+        chain_size = 1
+        max_chain_size = len(previous_hand) if previous_hand else float('inf')
+        left, prev, right = 0, 0, 1
+        while right<len(sequence):
+            if sequence[prev]==sequence[right]-1:
+                prev = right
+                right += 1
+                chain_size += 1
+            else:
+                left = right
+                prev = right
+                right += 1
+                chain_size = 1
+
+            if chain_size>max_chain_size:
+                left += 1
+                chain_size -= 1
+            
+            if chain_size>=5:
+                chain_cards = cards[left:right]
+                solo_chain_hands.append(chain_cards)
+            
+        all_valid_hands.extend(solo_chain_hands)
+
         # find airplane with pair combinations
         airplane_hands = list()
         if len(trio_chain_hands):
@@ -239,11 +314,23 @@ class CardHand:
             all_valid_hands.extend(airplane_hands)
 
         # choose random card to play
-        if not all_valid_hands:
-            # only single cards left
-            self.select(random.choice([[card] for card in cards]))
+        if previous_hand is not None:
+            valid_hands = list()
+            for hand in all_valid_hands + [[card] for card in cards]:
+                hand_category_match = self.get_hand_category(hand)==category
+                is_stronger_hand = self.calculate_hand_score(hand)>previous_hand_score
+                # print(hand, previous_hand_score, is_stronger_hand)
+                if hand_category_match and is_stronger_hand:
+                    valid_hands.append(hand)
+            
+            if len(valid_hands)>0:
+                self.select(random.choice(valid_hands))
         else:
-            self.select(random.choice(all_valid_hands))
+            if not all_valid_hands:
+                # only single cards left
+                self.select(random.choice([[card] for card in cards]))
+            else:
+                self.select(random.choice(all_valid_hands))
         
         #### Player will need to remove the cards in the hand from their cards.
 
