@@ -349,6 +349,40 @@ class GameRulesTestCase(unittest.TestCase):
             number_freq = self.hlpr.get_number_frequency_map(hand)
             self.assertFalse(rules.is_airplane_with_pair(number_freq)) 
 
+    def test_valid_is_bomb_with_dual_solo_function(self):
+        hands = self.hlpr.get_valid_bomb_with_dual_solo_card_hand() 
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            number_freq = self.hlpr.get_number_frequency_map(hand)
+            self.assertTrue(rules.is_bomb_with_dual_solo(number_freq)) 
+
+    def test_invalid_is_bomb_with_dual_solo_function(self):
+        hands = self.hlpr.get_valid_solo_card_chain_hands()
+        hands += self.hlpr.get_valid_pair_card_hand()
+        hands += self.hlpr.get_valid_bomb_card_hand()
+        hands += self.hlpr.get_valid_rocket_card_hand()
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            number_freq = self.hlpr.get_number_frequency_map(hand)
+            self.assertFalse(rules.is_bomb_with_dual_solo(number_freq))  
+
+    def test_valid_is_bomb_with_dual_pair_function(self):
+        hands = self.hlpr.get_valid_bomb_with_dual_pair_card_hand() 
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            number_freq = self.hlpr.get_number_frequency_map(hand)
+            self.assertTrue(rules.is_bomb_with_dual_pair(number_freq))  
+
+    def test_invalid_is_bomb_with_dual_pair_function(self):
+        hands = self.hlpr.get_valid_solo_card_chain_hands()
+        hands += self.hlpr.get_valid_pair_card_hand()
+        hands += self.hlpr.get_valid_bomb_card_hand()
+        hands += self.hlpr.get_valid_rocket_card_hand()
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            number_freq = self.hlpr.get_number_frequency_map(hand)
+            self.assertFalse(rules.is_bomb_with_dual_pair(number_freq))  
+
     def test_get_hand_category_function_returns_solo_card_category_when_hand_is_a_solo_hand(self):
         hands = [[4],[8],[13],[2],[14],[15]]
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
@@ -425,6 +459,20 @@ class GameRulesTestCase(unittest.TestCase):
         for hand in hands:
             number_freq = self.hlpr.get_number_frequency_map(hand)
             self.assertEqual(rules.get_hand_category(number_freq), const.CARD_CATEGORY.BOMB)
+
+    def test_get_hand_category_function_returns_bomb_with_solo_card_category_when_hand_is_a_bomb_hand(self):
+        hands = self.hlpr.get_valid_bomb_with_dual_solo_card_hand()
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            number_freq = self.hlpr.get_number_frequency_map(hand)
+            self.assertEqual(rules.get_hand_category(number_freq), const.CARD_CATEGORY.BOMB_WITH_SOLO)
+
+    def test_get_hand_category_function_returns_bomb_with_pair_card_category_when_hand_is_a_bomb_hand(self):
+        hands = self.hlpr.get_valid_bomb_with_dual_pair_card_hand()
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            number_freq = self.hlpr.get_number_frequency_map(hand)
+            self.assertEqual(rules.get_hand_category(number_freq), const.CARD_CATEGORY.BOMB_WITH_PAIR)
 
     def test_get_hand_category_function_returns_rocket_card_category_when_hand_is_a_rocket_hand(self):
         hands = self.hlpr.get_valid_rocket_card_hand()

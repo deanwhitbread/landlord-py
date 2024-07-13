@@ -135,6 +135,37 @@ def is_bomb(number_freq: dict[int:int]) -> bool:
     '''
     return len(number_freq.keys())==1 and sum(number_freq.values())==4
 
+def is_bomb_with_dual_solo(number_freq):
+    is_bomb = False 
+    solo_cards_needed = 0
+    jokers = 0
+    for key, val in number_freq.items():
+        if val==1:
+            solo_cards_needed -= 1
+            if key==14 or key==15:
+                jokers += 1
+        elif val==4:
+            is_bomb = True
+            solo_cards_needed += 2
+        else:
+            return False 
+    
+    return is_bomb and solo_cards_needed==0 and jokers<2
+
+def is_bomb_with_dual_pair(number_freq):
+    is_bomb = False 
+    pair_cards_needed = 0
+    for key, val in number_freq.items():
+        if val==2:
+            pair_cards_needed -= 1
+        elif val==4:
+            is_bomb = True
+            pair_cards_needed += 2
+        else:
+            return False 
+    
+    return is_bomb and pair_cards_needed==0
+    
 def is_rocket(number_freq: dict[int:int]) -> bool:
     '''Return True if the hand being played is a rocket hand, False otherwise.
 
@@ -306,10 +337,6 @@ def get_hand_category(number_freq):
         return const.CARD_CATEGORY.TRIO
     elif is_trio_chain(number_freq):
         return const.CARD_CATEGORY.TRIO_CHAIN
-    elif is_bomb(number_freq):
-        return const.CARD_CATEGORY.BOMB
-    elif is_rocket(number_freq):
-        return const.CARD_CATEGORY.ROCKET
     elif is_trio_with_solo(number_freq):
         return const.CARD_CATEGORY.TRIO_WITH_SOLO
     elif is_trio_with_pair(number_freq):
@@ -318,6 +345,14 @@ def get_hand_category(number_freq):
         return const.CARD_CATEGORY.AIRPLANE_WITH_SOLO
     elif is_airplane_with_pair(number_freq):
         return const.CARD_CATEGORY.AIRPLANE_WITH_PAIR
+    elif is_bomb(number_freq):
+        return const.CARD_CATEGORY.BOMB
+    elif is_bomb_with_dual_solo(number_freq):
+        return const.CARD_CATEGORY.BOMB_WITH_SOLO
+    elif is_bomb_with_dual_pair(number_freq):
+        return const.CARD_CATEGORY.BOMB_WITH_PAIR
+    elif is_rocket(number_freq):
+        return const.CARD_CATEGORY.ROCKET
     else:
         msg = f"The card sequence {[key for key, val in number_freq.items() for _ in range(val) ]} is not a recognised category."
         raise RuntimeError(msg)      
