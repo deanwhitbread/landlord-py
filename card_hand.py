@@ -30,9 +30,6 @@ class CardHand:
 
         # count the frequency of the card numbers
         number_freq = self.get_card_number_frequency_map(self.current_hand)
-        
-        # calculate score of hand. 
-        self.calculate_hand_score(self.current_hand)
 
         # check whether the hand is valid and can be played.
         if len(self.current_hand)==1:
