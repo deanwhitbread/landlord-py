@@ -24,14 +24,14 @@ class CardHandTestCase(unittest.TestCase):
         del cls.hlpr
         del cls.deck
 
-    def test_select_method_adds_any_set_of_cards_to_the_hand(self):
-        '''Test the select method adds any set of choosen cards to the player's hand.'''
+    def test_set_hand_method_adds_any_set_of_cards_to_the_hand(self):
+        '''Test the set hand method adds any set of choosen cards to the player's hand.'''
         hands = self.hlpr.get_valid_pair_card_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
             self.hand.reset()
             self.assertEqual(len(self.hand.current_hand), 0)
-            self.hand.select(hand)
+            self.hand.set_hand(hand)
             self.assertNotEqual(len(self.hand.current_hand), 0)
 
         hands = self.hlpr.get_invalid_pair_card_hand()
@@ -39,7 +39,7 @@ class CardHandTestCase(unittest.TestCase):
         for hand in hands:
             self.hand.reset()
             self.assertEqual(len(self.hand.current_hand), 0)
-            self.hand.select(hand)
+            self.hand.set_hand(hand)
             self.assertNotEqual(len(self.hand.current_hand), 0)
 
         hands = self.hlpr.get_valid_trio_chain_card_hand()
@@ -47,7 +47,7 @@ class CardHandTestCase(unittest.TestCase):
         for hand in hands:
             self.hand.reset()
             self.assertEqual(len(self.hand.current_hand), 0)
-            self.hand.select(hand)
+            self.hand.set_hand(hand)
             self.assertNotEqual(len(self.hand.current_hand), 0)
 
         hands = self.hlpr.get_invalid_trio_chain_card_hand()
@@ -55,7 +55,7 @@ class CardHandTestCase(unittest.TestCase):
         for hand in hands:
             self.hand.reset()
             self.assertEqual(len(self.hand.current_hand), 0)
-            self.hand.select(hand)
+            self.hand.set_hand(hand)
             self.assertNotEqual(len(self.hand.current_hand), 0)
 
         hands = self.hlpr.get_valid_combination_with_pair_hand()
@@ -63,7 +63,7 @@ class CardHandTestCase(unittest.TestCase):
         for hand in hands:
             self.hand.reset()
             self.assertEqual(len(self.hand.current_hand), 0)
-            self.hand.select(hand)
+            self.hand.set_hand(hand)
             self.assertNotEqual(len(self.hand.current_hand), 0)
 
         hands = self.hlpr.get_invalid_combination_with_pair_hand()
@@ -71,46 +71,46 @@ class CardHandTestCase(unittest.TestCase):
         for hand in hands:
             self.hand.reset()
             self.assertEqual(len(self.hand.current_hand), 0)
-            self.hand.select(hand)
+            self.hand.set_hand(hand)
             self.assertNotEqual(len(self.hand.current_hand), 0)
 
     def test_cannot_play_empty_hand(self):
         '''Test play method disallows playing an empty hand.'''
-        self.assertFalse(self.__class__.hand.play())
+        self.assertFalse(self.__class__.hand.is_valid())
 
-    def test_play_method(self):
-        '''Test play method allows a valid hand to be played.'''
+    def test_is_valid_method(self):
+        '''Test method allows a valid hand to be played.'''
         hands = self.hlpr.get_valid_trio_card_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
-            self.hand.select(hand)
-            self.assertTrue(self.hand.play())
+            self.hand.set_hand(hand)
+            self.assertTrue(self.hand.is_valid())
         
         hands = self.hlpr.get_valid_bomb_card_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
-            self.hand.select(hand)
-            self.assertTrue(self.hand.play())
+            self.hand.set_hand(hand)
+            self.assertTrue(self.hand.is_valid())
 
         hands = self.hlpr.get_valid_combination_with_solo_hand()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
-            self.hand.select(hand)
-            self.assertTrue(self.hand.play())
+            self.hand.set_hand(hand)
+            self.assertTrue(self.hand.is_valid())
     
     def test_reset_method_clears_current_hand(self):
         '''Test reset method clears the player's current hand.'''
         hands = self.hlpr.get_valid_solo_card_chain_hands()
         hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
         for hand in hands:
-            self.hand.select(hand)
+            self.hand.set_hand(hand)
             self.assertTrue(len(self.hand.current_hand)>=5)
             self.__class__.hand.reset()
             self.assertEqual(len(self.hand.current_hand), 0)
 
         solo_hand = self.hlpr.convert_hand_numbers_to_card_objects(self.solo_hand)
         for hand in solo_hand:
-            self.hand.select(hand)
+            self.hand.set_hand(hand)
             self.assertEqual(len(self.hand.current_hand), 1)
             self.__class__.hand.reset()
             self.assertEqual(len(self.hand.current_hand), 0)
@@ -120,32 +120,32 @@ class CardHandTestCase(unittest.TestCase):
         c1, c2, c3, wildcards = self.deck.deal()
         self.hand.set_random_hand(c1)
         self.assertIsNotNone(self.hand.get_hand())
-        self.assertTrue(self.hand.play()) 
+        self.assertTrue(self.hand.is_valid()) 
         self.hand.reset()
 
         self.hand.set_random_hand(c1+wildcards)
         self.assertIsNotNone(self.hand.get_hand())
-        self.assertTrue(self.hand.play()) 
+        self.assertTrue(self.hand.is_valid()) 
         self.hand.reset()
 
         self.hand.set_random_hand(c2[:5])
         self.assertIsNotNone(self.hand.get_hand())
-        self.assertTrue(self.hand.play()) 
+        self.assertTrue(self.hand.is_valid()) 
         self.hand.reset()
 
         self.hand.set_random_hand(c3[4:14])
         self.assertIsNotNone(self.hand.get_hand())
-        self.assertTrue(self.hand.play()) 
+        self.assertTrue(self.hand.is_valid()) 
         self.hand.reset()
 
         self.hand.set_random_hand([Card(3, "hearts")])
         self.assertIsNotNone(self.hand.get_hand())
-        self.assertTrue(self.hand.play()) 
+        self.assertTrue(self.hand.is_valid()) 
         self.hand.reset()
 
         self.hand.set_random_hand(wildcards)
         self.assertIsNotNone(self.hand.get_hand())
-        self.assertTrue(self.hand.play()) 
+        self.assertTrue(self.hand.is_valid()) 
         self.hand.reset()
 
     def test_set_random_hand_raises_type_error_when_non_card_object_parameter_passed(self):
@@ -188,12 +188,12 @@ class CardHandTestCase(unittest.TestCase):
         for i in range(len(opponent_hands)):
             op_hand = opponent_hands[i]
             op_hand_category = self.hand.get_hand_category(op_hand)
-            self.hand.calculate_hand_score(op_hand)
+            self.hand.get_hand_score(op_hand)
             op_hand_score = self.hand.hand_score
             player_hand = self.hand.set_random_hand(player_cards[i], op_hand)
             player_hand_category = self.hand.get_hand_category(player_hand)
             self.assertEqual(player_hand_category, op_hand_category) 
-            self.hand.calculate_hand_score(player_hand)
+            self.hand.get_hand_score(player_hand)
             player_hand_score = self.hand.hand_score
             self.assertTrue(player_hand_score>op_hand_score)
             self.hand.reset()

@@ -10,14 +10,14 @@ class Player:
         self.reset()
 
     def play_hand(self, previous_hand=None):
-        if self.get_hand() and not self.hand.play():
+        if self.get_hand() and not self.hand.is_valid():
             self.hand.reset()
             return False
 
         if not self.get_hand():
             self.set_random_hand(previous_hand)   
         
-        self.hand.calculate_hand_score(self.hand.get_hand())
+        self.hand.get_hand_score(self.hand.get_hand())
         self.remove_cards(self.get_hand())
         
         return self.get_hand()
@@ -102,7 +102,7 @@ class Player:
         return self.hand.get_hand()
 
     def set_hand(self, hand):
-        self.hand.select(hand)
+        self.hand.set_hand(hand)
 
     def set_random_hand(self, previous_hand=None):
         self.hand.set_random_hand(self.get_cards(), previous_hand)

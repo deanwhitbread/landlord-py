@@ -12,7 +12,7 @@ class CardHand:
         '''
         self.reset()
 
-    def select(self, hand: list[Card]):
+    def set_hand(self, hand: list[Card]):
         '''Set the selected cards as the player's card hand.
         
         Args:
@@ -20,7 +20,10 @@ class CardHand:
         '''
         self.current_hand = hand
 
-    def play(self) -> bool:
+    def get_hand(self):
+        return self.current_hand
+
+    def is_valid(self) -> bool:
         '''Return whether the selected hand can be played. 
         
         Returns: True if the selected hand can be played, False otherwise. 
@@ -44,7 +47,7 @@ class CardHand:
                 rules.is_combination(number_freq) or 
                 rules.is_chain(number_freq))
 
-    def calculate_hand_score(self, hand: list[Card]):  
+    def get_hand_score(self, hand: list[Card]):  
         '''Calculate the score of the player's current hand.
         
         Args:
@@ -103,11 +106,11 @@ class CardHand:
 
         if previous_hand:
             category = self.get_hand_category(previous_hand)
-            previous_hand_score = self.calculate_hand_score(previous_hand)
+            previous_hand_score = self.get_hand_score(previous_hand)
         else:
             prob_play_single_card = 0.3
             if len(cards)==1 or random.random()<prob_play_single_card:
-                self.select(random.choice([[card] for card in cards]))
+                self.set_hand(random.choice([[card] for card in cards]))
                 return self.get_hand()
             
 
@@ -315,26 +318,23 @@ class CardHand:
             valid_hands = list()
             for hand in all_valid_hands + [[card] for card in cards]:
                 hand_category_match = self.get_hand_category(hand)==category
-                is_stronger_hand = self.calculate_hand_score(hand)>previous_hand_score
+                is_stronger_hand = self.get_hand_score(hand)>previous_hand_score
                 # print(hand, previous_hand_score, is_stronger_hand)
                 if hand_category_match and is_stronger_hand:
                     valid_hands.append(hand)
             
             if len(valid_hands)>0:
-                self.select(random.choice(valid_hands))
+                self.set_hand(random.choice(valid_hands))
         else:
             if not all_valid_hands:
                 # only single cards left
-                self.select(random.choice([[card] for card in cards]))
+                self.set_hand(random.choice([[card] for card in cards]))
             else:
-                self.select(random.choice(all_valid_hands))
+                self.set_hand(random.choice(all_valid_hands))
         
         #### Player will need to remove the cards in the hand from their cards.
 
         return self.get_hand()
-
-    def get_hand(self):
-        return self.current_hand
 
     def get_hand_category(self, hand):
         number_freq = dict()
