@@ -168,8 +168,9 @@ class PlayerClassTestCase(unittest.TestCase):
             op_hand = opponent_hands[i]
             op_hand_category = self.player.hand.get_hand_category(op_hand)
             self.player.set_cards(player_cards[i])
-            player_hand = self.player.set_random_hand(op_hand)
-            player_hand_category = self.player.hand.get_hand_category(op_hand)
+            self.player.set_random_hand(op_hand)
+            player_hand = self.player.get_hand()
+            player_hand_category = self.player.hand.get_hand_category(player_hand)
             self.assertEqual(op_hand_category, player_hand_category)
     
     def test_set_random_hand_function_passes_when_player_does_not_have_stronger_hand(self):
