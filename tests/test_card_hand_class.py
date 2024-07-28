@@ -74,6 +74,15 @@ class CardHandTestCase(unittest.TestCase):
             self.hand.set_hand(hand)
             self.assertNotEqual(len(self.hand.current_hand), 0)
 
+    def test_set_hand_method_sets_hand_to_same_category_as_previous_hand_played(self):
+        previous_hand = [[3,4,5,6,7]]
+        previous_hand = self.hlpr.convert_hand_numbers_to_card_objects(previous_hand)
+        previous_hand_category = self.hand.get_hand_category(previous_hand[0])
+        solo_hands = [[4,5,6,7,8]]
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        self.hand.set_hand(self.hand.get_hand(), previous_hand[0], solo_hands)
+        self.assertTrue(self.hand.get_hand_category(self.hand.get_hand())==previous_hand_category)
+
     def test_cannot_play_empty_hand(self):
         '''Test play method disallows playing an empty hand.'''
         self.assertFalse(self.__class__.hand.is_valid())
@@ -207,4 +216,168 @@ class CardHandTestCase(unittest.TestCase):
             player_hand = self.hand.set_random_hand(player_cards[i], opponent_hands[i])
             self.assertEqual(len(player_hand), 0) 
             self.hand.reset()
+
+    def test_valid_get_rocket_hand_method(self):
+        solo_hand = [Card(12, 'hearts'), Card(13, 'hearts'), 
+                    Card(1, 'hearts'), Card(14, 'joker'), Card(15, 'joker')]
+        self.hand.set_hand(self.hand._get_rocket_hand(solo_hand))
+        hand = set([card.get_number() for card in self.hand.get_hand()])
+        self.assertIn(14, hand)
+        self.assertIn(15, hand)
+        self.assertEqual(len(hand), 2)
+
+    def test_invalid_get_rocket_hand_method(self):
+        solo_hand = [Card(12, 'hearts'), Card(13, 'hearts'), Card(1, 'hearts')]
+        self.hand.set_hand(self.hand._get_rocket_hand(solo_hand))
+        self.assertEqual(len(self.hand.get_hand()), 0)
+
+    def test_get_similar_cards_method_returns_array_containing_same_cards(self):
+        # previous_hands = [[5], [5,6,7,8,9], [8,8,8], [5,5], [4,4,4,4]]
+        # player_cards = [[3,4,8,10], [4,4,7,8,9,10,11,13], [4,5,5,7,11,11,11,2], [4,4,8,8,9,9,10,11,12], [7,7,7,7,12,1]]
+        player_cards = [[3,4,5,5,7,8,11], [7,7,7,8,8,8,10,13], [5,7,1,1,2,2,2]]
+        player_cards = self.hlpr.convert_hand_numbers_to_card_objects(player_cards)
+        for cards in player_cards:
+            card_freq_map = self.hlpr.get_number_frequency_map(cards)
+            for num, freq in card_freq_map.items():
+                similar_cards = self.hand._get_similar_cards(cards, num, freq)
+                self.assertTrue(all([card.get_number()==num for card in similar_cards]))
+                self.assertEqual(len(similar_cards), freq)
+                self.assertTrue(type(similar_cards)==list)
+
+    def test_valid_get_trio_with_all_combination_hands_method(self):
+        trio_hands = [[5,5,5,8,8,8], [3,3,3,4,4,4], [9,9,9,1,1,1]]
+        pair_hands = [[3,3,4,4,7,7], [10,10,1,1,2,2], [6,6,12,12,13,13]]
+        solo_hands = [[3,4,7], [10,1,2],[6,12,13]]
+        trio_hands = self.hlpr.convert_hand_numbers_to_card_objects(trio_hands)
+        pair_hands = self.hlpr.convert_hand_numbers_to_card_objects(pair_hands)
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        for i in range(len(trio_hands)):
+            trio, pair, solo = trio_hands[i], pair_hands[i], solo_hands[i]
+            self.assertTrue(len(self.hand._get_all_trio_with_combination_hands([pair], [trio]))>0)
+            self.assertTrue(len(self.hand._get_all_trio_with_combination_hands([solo], [trio]))>0)
+
+    def test_move_high_cards_to_back_of_array_method(self):
+        player_cards = [[1,7,7,8,10,13], [1,2,3,7,8,10,11]]
+        player_cards = self.hlpr.convert_hand_numbers_to_card_objects(player_cards)
+        for cards in player_cards:
+            cards = [[card] for card in cards]
+            cards = self.hand._move_high_cards_to_back_of_array(cards)
+            self.assertEqual(cards.pop().pop().get_number(), 1)
+
+    def test_valid_get_chain_hands_method(self):
+        trio_hands = [[3,3,3],[4,4,4],[7,7,7],[8,8,8],[9,9,9],[10,10,10]]
+        trio_hands = self.hlpr.convert_hand_numbers_to_card_objects(trio_hands)
+        chain_hands = self.hand._get_chain_hands(trio_hands, min_hands_needed=2)
+        self.assertTrue(len(chain_hands)>0)
+
+        pair_hands = [[3,3],[4,4],[5,5],[6,6],[7,7],[11,11],[12,12],[13,13]]
+        pair_hands = self.hlpr.convert_hand_numbers_to_card_objects(pair_hands)
+        chain_hands = self.hand._get_chain_hands(pair_hands, min_hands_needed=2)
+        self.assertTrue(len(chain_hands)>0)
+        
+        solo_hands = [[6],[7],[8],[9],[10],[2],[14]]        
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        chain_hands = self.hand._get_chain_hands(solo_hands, min_hands_needed=5)
+        self.assertTrue(len(chain_hands)>0)
+
+    def test_invalid_get_chain_hands_method(self):
+        solo_hands = [[3],[4],[5],[7],[11],[12],[13],[15]]
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        chain_hands = self.hand._get_chain_hands(solo_hands, min_hands_needed=5)
+        self.assertEqual(len(chain_hands), 0)
+
+    def test_get_chain_hands_method_returns_chains_same_length_as_previous_hand(self):
+        solo_hands = [[4],[6],[9],[10],[11],[12],[13],[1]]
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        chain_hands = self.hand._get_chain_hands(solo_hands, min_hands_needed=5, max_hands_needed=6)
+        self.assertEqual(len(chain_hands), 1)
+        self.assertEqual(len(chain_hands[0]), 6)
+
+    def test_valid_get_chain_sequences_method(self):
+        solo_hands = [[4],[6],[9],[10],[11],[12],[13],[1],[2]]
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        sequences = self.hand._get_chain_sequences(solo_hands, min_hands_needed=5)
+        for chain in sequences:
+            self.assertTrue(len(chain)>=5)
+
+        pair_hands = [[4,4],[5,5],[6,6],[9,9],[12,12]]
+        pair_hands = self.hlpr.convert_hand_numbers_to_card_objects(pair_hands)
+        sequences = self.hand._get_chain_sequences(pair_hands, min_hands_needed=3)
+        for chain in sequences:
+            self.assertTrue(len(chain)>=6)
+
+        trio_hands = [[8,8,8],[13,13,13],[1,1,1]]
+        trio_hands = self.hlpr.convert_hand_numbers_to_card_objects(trio_hands)
+        sequences = self.hand._get_chain_sequences(trio_hands, min_hands_needed=2)
+        for chain in sequences:
+            self.assertTrue(len(chain)>=6)
+    
+    def test_get_chain_sequences_method_returns_sequences_same_length_as_previous_hand(self):
+        previous_hand = [[3,4,5,6,7]]
+        previous_hand = self.hlpr.convert_hand_numbers_to_card_objects(previous_hand)
+
+        solo_hands = [[4],[5],[6],[7],[8],[10],[11],[12],[13],[1]]
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        sequences = self.hand._get_chain_sequences(solo_hands, min_hands_needed=5, previous_hand=previous_hand.pop())
+        self.assertEqual(len(sequences), 2)
+        for chain in sequences:
+            self.assertTrue(len(chain)==5)
+
+    def test_invalid_get_chain_sequence_method(self):
+        solo_hands = [[4],[6],[9],[11],[12],[13],[2]]
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        sequences = self.hand._get_chain_sequences(solo_hands, min_hands_needed=5)
+        self.assertEqual(len(sequences), 0)
+
+    def test_valid_get_airplane_hands_method(self):
+        trio_hands = [[3,3,3,4,4,4]]
+        pair_hands = [[7,7],[10,10]]
+        solo_hands = [[7,10,1,2]]
+        trio_hands = self.hlpr.convert_hand_numbers_to_card_objects(trio_hands)
+        pair_hands = self.hlpr.convert_hand_numbers_to_card_objects(pair_hands)
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        airplane_hands = self.hand._get_airplane_hands(trio_hands, solo_hands[0], pair_hands)
+        self.assertTrue(len(airplane_hands)>0)
+
+    def test_invalid_get_airplane_hands_method(self):
+        trio_hands = [[3,3,3,4,4,4]]
+        pair_hands = [[3,3],[4,4]]
+        solo_hands = [[3,4]]
+        trio_hands = self.hlpr.convert_hand_numbers_to_card_objects(trio_hands)
+        pair_hands = self.hlpr.convert_hand_numbers_to_card_objects(pair_hands)
+        solo_hands = self.hlpr.convert_hand_numbers_to_card_objects(solo_hands)
+        airplane_hands = self.hand._get_airplane_hands(trio_hands, solo_hands[0], pair_hands)
+        self.assertEqual(len(airplane_hands), 0)
+
+    def test_valid_get_all_pairs_method(self):
+        hands = [[3,3,4,4,7,8,10,11], [5,6,8,13,13,1,1]]
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            freq_map = self.hlpr.get_number_frequency_map(hand)
+            pair_hands = self.hand._get_all_pairs(hand, freq_map)
+            self.assertTrue(len(pair_hands)>0)
+
+    def test_invalid_get_all_pairs_method(self):
+        hands = [[3,7,8,10,11], [5,6,8,13]]
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            freq_map = self.hlpr.get_number_frequency_map(hand)
+            pair_hands = self.hand._get_all_pairs(hand, freq_map)
+            self.assertTrue(len(pair_hands)==0)
+
+    def test_valid_get_all_trios_method(self):
+        hands = [[3,3,4,4,4,7,8,10,10,10,11], [5,6,6,6,8,13,13,1,1]]
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            freq_map = self.hlpr.get_number_frequency_map(hand)
+            trio_hands = self.hand._get_all_trios(hand, freq_map)
+            self.assertTrue(len(trio_hands)>0)
+
+    def test_invalid_get_all_trios_method(self):
+        hands = [[3,3,4,4,7,8,10,11], [5,6,8,13,13,1,1]]
+        hands = self.hlpr.convert_hand_numbers_to_card_objects(hands)
+        for hand in hands:
+            freq_map = self.hlpr.get_number_frequency_map(hand)
+            trio_hands = self.hand._get_all_trios(hand, freq_map)
+            self.assertTrue(len(trio_hands)==0)
     
