@@ -188,9 +188,20 @@ class BiddingEngine:
 
 class GameplayEngine:
     def __init__(self):
+        '''Construct a GameplayEngine object.'''
         self.reset() 
 
-    def play_round(self, order, stake): 
+    def play_round(self, order: list[Player], stake: int) -> (Player, int): 
+        '''Plays a round of Landlord and returns the round winner and winning stake. 
+        
+        Args: 
+            order - A list of Player objects representing the order of play, with the landlord
+                    playing first, starting the round.
+            stake - An integer representing the initial stake at the beginning of the round. 
+        
+        Returns: A tuple containing a player object in the first index that represents the winning player,
+                and an integer in the second index representing the total stake won from the round. 
+        '''
         previous_hand, previous_player_to_play_hand = None, None
         ptr = -1
         while len(order[ptr].get_cards())!=0:
@@ -222,9 +233,16 @@ class GameplayEngine:
         
         return previous_player_to_play_hand, stake
     
-    def get_play_order(self, landlord, peasants):
+    def get_play_order(self, landlord: Player, peasants: list[Player]) -> list[Player]:
+        '''Returns a list of Player objects representing the play order of the round of landlord.
+        
+        Args:
+            landlord - A Player object that represents the landlord in a single round.
+            peasants - A list of Player objects that represents the peasants in a single round.
+        '''
         return peasants + [landlord]
 
     def reset(self):
+        '''Resets the GameplayEngine class, resetting the landlord and peasants in the round.'''
         self.landlord = None
         self.peasants = None
