@@ -41,6 +41,9 @@ class LandlordGameTestCase(unittest.TestCase):
         self.assertNotIn(self.game.get_landlord(), self.game.get_peasants())
 
     def test_losing_bidding_players_becomes_peasants(self):
+        self.player1.set_bid(3)
+        self.player2.set_bid(2)
+        self.player3.set_bid(1)
         self.assertIsNone(self.game.get_peasants())
         self.assertTrue(self.game._execute_bidding())
         self.assertIsNotNone(self.game.get_peasants())
@@ -88,3 +91,5 @@ class LandlordGameTestCase(unittest.TestCase):
 
     def test_has_game_ended_returns_false_when_players_have_stake_remaining(self):
         self.assertFalse(self.game.has_game_ended())
+
+    

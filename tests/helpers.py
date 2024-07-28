@@ -60,8 +60,7 @@ class TestHelpers:
         return [[3,3],
             [6,6], 
             [1,1],
-            [2,2],
-            [14,15]]
+            [2,2]]
 
     def get_invalid_pair_card_hand(self):
         '''Returns a 2-dimensional list of integers representing the invalid
@@ -230,6 +229,51 @@ class TestHelpers:
             [7,7,7,7,4,4],
             [2,2,2,2,4,4,5,5,9,9]]
 
+    def get_valid_trio_with_solo_hands(self):
+        return [[3,3,3,9], 
+            [6,6,6,9], 
+            [4,4,4,2], 
+            [2,2,2,13], 
+            [12,12,12,2], 
+            [1,1,1,14]] 
+    
+    def get_valid_trio_with_pair_hands(self):
+        return [[5,5,5,8,8], 
+            [10,10,10,2,2], 
+            [1,1,2,2,2], 
+            [7,7,7,12,12], 
+            [13,13,1,1,1]] 
+    
+    def get_valid_airplane_with_solo_hands(self):
+        return [[3,3,3,4,4,4,8,11], 
+            [5,5,5,6,6,6,7,7,7,10,13,1], 
+            [12,12,12,13,13,13,1,1,1,5,9,14],
+            [10,10,10,11,11,11,12,12,12,13,13,13,1,1,1,6,4,3,8,2]] 
+
+    def get_valid_airplane_with_pair_hands(self):
+        return [[3,3,3,4,4,4,8,8,11,11], 
+            [5,5,5,6,6,6,7,7,7,10,10,13,13,1,1], 
+            [12,12,12,13,13,13,1,1,1,5,5,7,7,9,9],
+            [11,11,11,12,12,12,13,13,13,1,1,1,6,6,4,4,3,3,2,2]]
+
+    def get_hands_with_unrecognised_card_category(self):
+        return [[3,3,3,4,4,4,4], 
+            [7,7,2,2,2,2], 
+            [10,10,2],
+            [4,4,4,4,14,15]] 
+
+    def get_valid_bomb_with_dual_solo_card_hand(self):
+        return [[5,5,5,5,7,8], 
+            [10,10,10,10,3,12], 
+            [2,2,2,2,9,14], 
+            [7,7,7,7,12,1]] 
+
+    def get_valid_bomb_with_dual_pair_card_hand(self):
+        return [[3,3,3,3,6,6,10,10], 
+            [7,7,7,7,4,4,2,2], 
+            [13,13,13,13,6,6,8,8], 
+            [1,1,1,1,13,13,2,2]]
+        
     '''
         Integer to Card object converter
     '''

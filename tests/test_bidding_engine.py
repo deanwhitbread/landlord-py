@@ -8,10 +8,10 @@ class BiddingEngineTestCase(unittest.TestCase):
         self.players = [self.player1, self.player2, self.player3]
         self.engine.set_players(self.players)
         self.deck.shuffle()
-        p1_cards, p2_cards, p3_cards, self.wildcards = self.deck.deal()
-        self.player1.set_cards(p1_cards)
-        self.player2.set_cards(p2_cards)
-        self.player3.set_cards(p3_cards)
+        c1, c2, c3, self.wildcards = self.deck.deal()
+        self.player1.set_cards(c1)
+        self.player2.set_cards(c2)
+        self.player3.set_cards(c3)
 
     def tearDown(self):
         for player in self.players:
@@ -38,6 +38,9 @@ class BiddingEngineTestCase(unittest.TestCase):
         del cls.deck
 
     def test_execute_bidding_round_function_returns_max_bid_and_winner_bidder(self):
+        self.player1.set_bid(3)
+        self.player2.set_bid(2)
+        self.player3.set_bid(1)
         max_bid, winner = self.engine.execute_bidding_round()
         self.assertTrue(max_bid>=0 and max_bid<=3)
         self.assertTrue(type(winner), Player)
