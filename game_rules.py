@@ -90,13 +90,31 @@ def is_trio_chain(number_freq: dict[int:int]) -> bool:
 
     return is_chain_in_sequence(freq, cards_in_hand, 3)
 
-def is_trio_with_solo(number_freq):
+def is_trio_with_solo(number_freq: dict[int: int]) -> bool:
+    '''Returns True if the hand is a trio with solo card hand, False otherwise.
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+    '''
     return sum(number_freq.values())==4 and contains_solo_hand(number_freq) and contains_trio_hand(number_freq)
 
-def is_trio_with_pair(number_freq):
+def is_trio_with_pair(number_freq: dict[int: int]) -> bool:
+    '''Returns True if the hand is a trio with pair card hand, False otherwise.
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+    '''
     return sum(number_freq.values())==5 and contains_pair_hand(number_freq) and contains_trio_hand(number_freq) 
 
-def is_airplane_with_solo(number_freq):
+def is_airplane_with_solo(number_freq: dict[int: int]) -> bool:
+    '''Returns True if the hand is an airplane with solo card hand, False otherwise.
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+    '''
     if contains_solo_hand(number_freq) and contains_trio_chain_hand(number_freq):
         solos_needed = 0
         for val in number_freq.values():
@@ -111,7 +129,13 @@ def is_airplane_with_solo(number_freq):
     else:
         return  False
 
-def is_airplane_with_pair(number_freq):
+def is_airplane_with_pair(number_freq: dict[int: int]) -> bool:
+    '''Returns True if the hand is an airplane with pair card hand, False otherwise.
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+    '''
     if contains_pair_hand(number_freq) and contains_trio_chain_hand(number_freq):
         pairs_needed = 0
         for val in number_freq.values():
@@ -135,7 +159,13 @@ def is_bomb(number_freq: dict[int:int]) -> bool:
     '''
     return len(number_freq.keys())==1 and sum(number_freq.values())==4
 
-def is_bomb_with_dual_solo(number_freq):
+def is_bomb_with_dual_solo(number_freq: dict[int: int]) -> bool:
+    '''Returns True if the hand is a bomb with dual solo card hand, False otherwise.
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+    '''
     is_bomb = False 
     solo_cards_needed = 0
     jokers = 0
@@ -152,7 +182,13 @@ def is_bomb_with_dual_solo(number_freq):
     
     return is_bomb and solo_cards_needed==0 and jokers<2
 
-def is_bomb_with_dual_pair(number_freq):
+def is_bomb_with_dual_pair(number_freq: dict[int: int]) -> bool:
+    '''Returns True if the hand is a bomb with dual pair card hand, False otherwise.
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+    '''
     is_bomb = False 
     pair_cards_needed = 0
     for key, val in number_freq.items():
@@ -195,10 +231,22 @@ def contains_pair_hand(number_freq: dict[int:int]) -> bool:
     return (each_trio_has_matching_non_trio_hand(number_freq, is_solo=False) and 
         not does_two_preceed_three_in_trio_chain(number_freq))
 
-def contains_trio_hand(number_freq):
+def contains_trio_hand(number_freq: dict[int: int]) -> bool:
+    '''Returns True if the hand contains a trio card hand, False otherwise.
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+    '''
     return 3 in set(number_freq.values())
 
-def contains_trio_chain_hand(number_freq):
+def contains_trio_chain_hand(number_freq: dict[int: int]) -> bool:
+    '''Returns True if the hand contains a trio chain card hand, False otherwise.
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+    '''
     trio_freq = dict()
     for key, val in number_freq.items():
         if val==3:
@@ -324,7 +372,15 @@ def does_two_preceed_three_in_trio_chain(number_freq):
 
     return 2 in trio_hands and 3 in trio_hands
 
-def get_hand_category(number_freq):
+def get_hand_category(number_freq: dict[int: int]) -> int:
+    '''Returns an integer representing the card category the hand is associated with. 
+    
+    Args:
+        number_freq - A hash map that maps the card number to the number of 
+                    times it appears in the hand.
+
+    Raises: RuntimeError when the hand category is not recognised. 
+    '''
     if is_solo(number_freq):
         return const.CARD_CATEGORY.SOLO
     elif is_solo_chain(number_freq):
