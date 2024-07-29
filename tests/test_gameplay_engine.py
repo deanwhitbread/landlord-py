@@ -44,12 +44,12 @@ class GameplayEngineTestCase(unittest.TestCase):
         self.assertTrue(stake>=self.game.get_landlord().get_bid_amount())
     
     def test_landlord_is_winner_when_is_first_player_to_have_no_cards(self):
-        landlord_cards = [[8,8,8,13,1,14,15]]
+        landlord_cards = [[5,14,15]]
         peasants_cards = [[3,4,4,6,6,6,9,10], [3,3,7,7,7,9,11]]
         landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
         peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)
         p1, p2, p3 = self.game.get_players()
-        p1.set_bid(3)
+        p1.set_bid(3), p2.set_bid(1), p3.set_bid(2)
         p1.set_cards(landlord_cards[0]), p2.set_cards(peasants_cards[0]), p3.set_cards(peasants_cards[1])
         self.game._execute_bidding()
         order = self.gameplay.get_play_order(self.game.get_landlord(), self.game.get_peasants())
@@ -58,11 +58,11 @@ class GameplayEngineTestCase(unittest.TestCase):
 
     def test_peasants_win_if_one_peasant_has_no_cards(self):
         landlord_cards = [[3,3,4,4,7,8,9]]
-        peasants_cards = [[5,5,8,8,8,9,10,11,12,13], [3,3,7,7,7,9,11,13]]
+        peasants_cards = [[1,1], [3,3,7,7,7,9,11,13]]
         landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
         peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)
         p1, p2, p3 = self.game.get_players()
-        p1.set_bid(3)
+        p1.set_bid(3), p2.set_bid(1), p3.set_bid(2)
         p1.set_cards(landlord_cards[0]), p2.set_cards(peasants_cards[0]), p3.set_cards(peasants_cards[1])
         self.game._execute_bidding()
         order = self.gameplay.get_play_order(self.game.get_landlord(), self.game.get_peasants())
