@@ -17,6 +17,8 @@ class LandlordGameTestCase(unittest.TestCase):
         self.deck.reset()
         del self.wildcards
         self.gameplay.reset()
+        for player in self.game.get_players():
+            player.set_stake_amount(60)
     
     @classmethod
     def setUpClass(cls):
