@@ -262,7 +262,13 @@ class CardHandTestCase(unittest.TestCase):
         for cards in player_cards:
             cards = [[card] for card in cards]
             cards = self.hand._move_high_cards_to_back_of_array(cards)
-            self.assertEqual(cards.pop().pop().get_number(), 1)
+            self.assertEqual(cards[-1][0].get_number(), 1)
+
+    def test_move_high_cards_to_back_of_array_method_remove_jokers(self):
+        player_cards = [[1],[2],[5],[5],[7],[11],[12],[13],[14],[15]]
+        player_cards = self.hlpr.convert_hand_numbers_to_card_objects(player_cards)
+        cards = self.hand._move_high_cards_to_back_of_array(player_cards)
+        self.assertEqual(cards[-1][0].get_number(), 1)
 
     def test_valid_get_chain_hands_method(self):
         trio_hands = [[3,3,3],[4,4,4],[7,7,7],[8,8,8],[9,9,9],[10,10,10]]

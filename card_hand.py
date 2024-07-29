@@ -239,15 +239,21 @@ class CardHand:
         Args:
             array - A list of Card objects will be modified. 
         '''
-        while array[0][0].get_number()==1 or array[0][0].get_number()==2:
-            if array[0][0].get_number()==2:
-                # remove two from the array. 
-                array = array[1:]
-            else:
-                hand = array[0]
-                array = array[1:]
-                array.append(hand)  
+        while array[-1][0].get_number()==14 or array[-1][0].get_number()==15:
+            if array[-1][0].get_number()==15:
+                array = array[:-1]
 
+            if array[-1][0].get_number()==14:
+                array = array[:-1]
+
+        while array[0][0].get_number()==1 or array[0][0].get_number()==2:
+            if array[0][0].get_number()==1:
+                ace = array[0]
+                array = array[1:] + [ace]
+
+            if array[0][0].get_number()==2:
+                array = array[1:]
+        
         return array  
 
     def _get_chain_hands(self, hands_array: list[list[Card]], min_hands_needed: int, 
