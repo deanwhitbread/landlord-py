@@ -126,7 +126,7 @@ class GameplayEngineTestCase(unittest.TestCase):
         self.assertEqual(total_stake, 3*2)
 
     def test_stake_doubles_when_both_players_pass(self):
-        landlord_cards = [[13,1,1,2]]
+        landlord_cards = [[13,2]]
         peasants_cards = [[3,4,4,6,6,6,9,10], [3,3,7,7,7,9,11]]
         landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
         peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)

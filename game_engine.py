@@ -239,6 +239,9 @@ class GameplayEngine:
                 player.set_random_hand()
             
             if player.get_hand():
+                if self.double_round_stake(player, previous_player_to_play_hand):
+                    stake *= 2
+                
                 previous_hand, previous_player_to_play_hand = player.get_hand(), player 
                 player.play_hand()
                 player.hand.reset()
