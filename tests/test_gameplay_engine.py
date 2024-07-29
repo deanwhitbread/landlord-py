@@ -73,27 +73,28 @@ class GameplayEngineTestCase(unittest.TestCase):
         hand = [[3,3,3,3]]
         hand = self.hlpr.convert_hand_numbers_to_card_objects(hand)
         p1, p2, p3 = self.game.get_players()
+        p1.set_hand(hand.pop())
         self.assertTrue(self.gameplay.double_round_stake(p1, p3))
 
     def test_double_stake_function_returns_true_when_hand_is_a_rocket_hand(self):
         hand = [[14,15]]
         hand = self.hlpr.convert_hand_numbers_to_card_objects(hand)
         p1, p2, p3 = self.game.get_players()
-        p1.set_hand(hand)
+        p1.set_hand(hand.pop())
         self.assertTrue(self.gameplay.double_round_stake(p1, p3))
 
     def test_double_stake_function_returns_true_when_both_players_have_passed(self):
         hand = [[5,5,5,13]]
         hand = self.hlpr.convert_hand_numbers_to_card_objects(hand)
         p1, p2, p3 = self.game.get_players()
-        p1.set_hand(hand)
+        p1.set_hand(hand.pop())
         self.assertTrue(self.gameplay.double_round_stake(p1, p1))
 
     def test_double_stake_function_returns_false_for_any_other_hand(self):
         hand = [[14,15]]
         hand = self.hlpr.convert_hand_numbers_to_card_objects(hand)
         p1, p2, p3 = self.game.get_players()
-        p1.set_hand(hand)
+        p1.set_hand(hand.pop())
         self.assertTrue(self.gameplay.double_round_stake(p1, p3))
 
     def test_bomb_doubles_the_round_stake_when_played(self):

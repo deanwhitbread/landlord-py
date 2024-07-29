@@ -3,6 +3,7 @@ from game_player import Player
 from card_deck import CardDeck, Card
 import random
 import game_rules as rules
+from collections import defaultdict
 
 class LandlordGame:
     def __init__(self, players):
@@ -262,6 +263,19 @@ class GameplayEngine:
             peasants - A list of Player objects that represents the peasants in a single round.
         '''
         return peasants + [landlord]
+
+    def double_round_stake(self, player: Player, previous_player: Player) -> bool:
+        '''Returns True if the round stake should be doubled, False otherwise.
+        
+        Args:
+            player - A Player object representing the current player who is playing a hand.
+            previous_player - A Player object representing the previous player to play a hand. 
+        '''
+        card_number_freq = defaultdict(int)
+        for card in player.get_hand():
+            card_number_freq[card.get_number()] += 1
+
+        return player==previous_player or rules.is_bomb(card_number_freq) or rules.is_rocket(card_number_freq)
 
     def reset(self):
         '''Resets the GameplayEngine class, resetting the landlord and peasants in the round.'''
