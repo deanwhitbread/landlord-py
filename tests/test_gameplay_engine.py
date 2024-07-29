@@ -69,3 +69,71 @@ class GameplayEngineTestCase(unittest.TestCase):
         winner, total_stake = self.gameplay.play_round(order, self.game.get_round_stake())
         self.assertIn(winner, self.game.get_peasants())
     
+    def test_double_stake_function_returns_true_when_hand_is_a_bomb_hand(self):
+        hand = [[3,3,3,3]]
+        hand = self.hlpr.convert_hand_numbers_to_card_objects(hand)
+        p1, p2, p3 = self.game.get_players()
+        self.assertTrue(self.gameplay.double_round_stake(p1, p3))
+
+    def test_double_stake_function_returns_true_when_hand_is_a_rocket_hand(self):
+        hand = [[14,15]]
+        hand = self.hlpr.convert_hand_numbers_to_card_objects(hand)
+        p1, p2, p3 = self.game.get_players()
+        p1.set_hand(hand)
+        self.assertTrue(self.gameplay.double_round_stake(p1, p3))
+
+    def test_double_stake_function_returns_true_when_both_players_have_passed(self):
+        hand = [[5,5,5,13]]
+        hand = self.hlpr.convert_hand_numbers_to_card_objects(hand)
+        p1, p2, p3 = self.game.get_players()
+        p1.set_hand(hand)
+        self.assertTrue(self.gameplay.double_round_stake(p1, p1))
+
+    def test_double_stake_function_returns_false_for_any_other_hand(self):
+        hand = [[14,15]]
+        hand = self.hlpr.convert_hand_numbers_to_card_objects(hand)
+        p1, p2, p3 = self.game.get_players()
+        p1.set_hand(hand)
+        self.assertTrue(self.gameplay.double_round_stake(p1, p3))
+
+    def test_bomb_doubles_the_round_stake_when_played(self):
+        landlord_cards = [[2,2,2,2]]
+        peasants_cards = [[3,4,4,6,6,6,9,10], [3,3,7,7,7,9,11]]
+        landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
+        peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)
+        p1, p2, p3 = self.game.get_players()
+        p1.set_bid(3), p2.set_bid(1), p3.set_bid(2)
+        p1.set_cards(landlord_cards[0]), p2.set_cards(peasants_cards[0]), p3.set_cards(peasants_cards[1])
+        self.game._execute_bidding()
+        order = self.gameplay.get_play_order(self.game.get_landlord(), self.game.get_peasants())
+        self.assertEqual(self.game.get_round_stake(), 3)
+        winner, total_stake = self.gameplay.play_round(order, self.game.get_round_stake())
+        self.assertEqual(total_stake, 3*2)
+
+    def test_rocket_doubles_the_round_stake_when_played(self):
+        landlord_cards = [[14,15]]
+        peasants_cards = [[3,4,4,6,6,6,9,10], [3,3,7,7,7,9,11]]
+        landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
+        peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)
+        p1, p2, p3 = self.game.get_players()
+        p1.set_bid(3), p2.set_bid(1), p3.set_bid(2)
+        p1.set_cards(landlord_cards[0]), p2.set_cards(peasants_cards[0]), p3.set_cards(peasants_cards[1])
+        self.game._execute_bidding()
+        order = self.gameplay.get_play_order(self.game.get_landlord(), self.game.get_peasants())
+        self.assertEqual(self.game.get_round_stake(), 3)
+        winner, total_stake = self.gameplay.play_round(order, self.game.get_round_stake())
+        self.assertEqual(total_stake, 3*2)
+
+    def test_stake_doubles_when_both_players_pass(self):
+        landlord_cards = [[13,1,1,2]]
+        peasants_cards = [[3,4,4,6,6,6,9,10], [3,3,7,7,7,9,11]]
+        landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
+        peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)
+        p1, p2, p3 = self.game.get_players()
+        p1.set_bid(3), p2.set_bid(1), p3.set_bid(2)
+        p1.set_cards(landlord_cards[0]), p2.set_cards(peasants_cards[0]), p3.set_cards(peasants_cards[1])
+        self.game._execute_bidding()
+        order = self.gameplay.get_play_order(self.game.get_landlord(), self.game.get_peasants())
+        self.assertEqual(self.game.get_round_stake(), 3)
+        winner, total_stake = self.gameplay.play_round(order, self.game.get_round_stake())
+        self.assertEqual(total_stake, 3*2)
