@@ -15,7 +15,7 @@ class LandlordGame:
         self.players = players
         self.bidding_engine = BiddingEngine()
         self.deck = CardDeck()
-        self.gamplay_engine = GameplayEngine()
+        self.gameplay_engine = GameplayEngine()
         self.reset()
 
     def play(self) -> bool:
@@ -42,7 +42,9 @@ class LandlordGame:
 
             # play round
             # get play order
-            self.gamplay_engine.get_play_order(self.get_landlord(), self.get_peasants())
+            order = self.gameplay_engine.get_play_order(self.get_landlord(), self.get_peasants())
+            winner, total_stake = self.gameplay_engine.play_round(order, self.get_round_stake())
+            self.update_players_stake(winner, total_stake)
 
             # round ends, prepare next round.
             self.reset()
@@ -111,6 +113,25 @@ class LandlordGame:
         p3.set_cards(c3)
 
         return wildcards
+
+    def update_players_stake(self, winner: Player, total_stake: int) -> None:
+        '''Updates the stake of all players with the total stake. If the landlord wins, the landlord
+        receives the total stake, while peasants pay the landlord. If the peasants win, they each 
+        receives the total stake, while the landlord pays each peasant. 
+        
+        Args:
+            winner - A Player object representing the round winner.
+            total_stake - An integer representing the stake the winner player has won and the amount
+                        the losing player(s) must pay.
+        '''
+        if winner==self.get_landlord():
+            for peasant in self.get_peasants():
+                winner.set_stake_amount(winner.get_stake_amount() + total_stake)
+                peasant.set_stake_amount(peasant.get_stake_amount() - total_stake)
+        else:
+            for peasant in self.get_peasants():
+                self.get_landlord().set_stake_amount(self.get_landlord().get_stake_amount() - total_stake)
+                peasant.set_stake_amount(peasant.get_stake_amount() + total_stake)
 
     def reset(self):
         '''Resets the round in a game of landlord.'''
