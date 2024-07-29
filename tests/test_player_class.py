@@ -35,17 +35,17 @@ class PlayerClassTestCase(unittest.TestCase):
         self.assertFalse(self.player.set_bid(10))
         self.assertFalse(self.player.set_bid(20))
     
-    def test_stake_decreases_when_valid_bid_submitted(self):
+    def test_stake_does_not_decrease_when_valid_bid_submitted(self):
         self.assertEqual(self.player.get_stake_amount(), 60)
         self.player.set_bid(0)
         self.assertTrue(self.player.has_passed_bidding())
         self.assertEqual(self.player.get_stake_amount(), 60)
         self.player.set_bid(1)
-        self.assertEqual(self.player.get_stake_amount(), 59)
+        self.assertEqual(self.player.get_stake_amount(), 60)
         self.player.set_bid(2)
-        self.assertEqual(self.player.get_stake_amount(), 57)
+        self.assertEqual(self.player.get_stake_amount(), 60)
         self.player.set_bid(3)
-        self.assertEqual(self.player.get_stake_amount(), 54)
+        self.assertEqual(self.player.get_stake_amount(), 60)
     
     def test_stake_is_unchanged_when_invalid_bid_submitted(self):
         self.assertEqual(self.player.get_stake_amount(), 60)
@@ -100,7 +100,7 @@ class PlayerClassTestCase(unittest.TestCase):
             bid = self.player.get_random_bid_amount()
         self.assertEqual(bid, 1)
         self.assertEqual(self.player.get_bid_amount(), bid)
-        self.assertEqual(self.player.get_stake_amount(), 0)
+        self.assertEqual(self.player.get_stake_amount(), 1)
 
     def test_add_wildcards_function_adds_cards_to_the_players_cards(self):
         cards1, cards2, cards3, wildcards = self.deck.deal()
@@ -114,7 +114,7 @@ class PlayerClassTestCase(unittest.TestCase):
         self.assertEqual(self.player.get_stake_amount(), 2)
         self.player.set_bid(3)
         self.assertEqual(self.player.get_bid_amount(), 2)
-        self.assertEqual(self.player.get_stake_amount(), 0)
+        self.assertEqual(self.player.get_stake_amount(), 2)
 
     def test_player_can_randomly_play_a_valid_hand(self):
         c1, c2, c3, wildcards = self.deck.deal()

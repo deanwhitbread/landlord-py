@@ -3,6 +3,7 @@ from game_player import Player
 from card_deck import CardDeck, Card
 import random
 import game_rules as rules
+from collections import defaultdict
 
 class LandlordGame:
     def __init__(self, players):
@@ -15,7 +16,7 @@ class LandlordGame:
         self.players = players
         self.bidding_engine = BiddingEngine()
         self.deck = CardDeck()
-        self.gamplay_engine = GameplayEngine()
+        self.gameplay_engine = GameplayEngine()
         self.reset()
 
     def play(self) -> bool:
@@ -42,7 +43,9 @@ class LandlordGame:
 
             # play round
             # get play order
-            self.gamplay_engine.get_play_order(self.get_landlord(), self.get_peasants())
+            order = self.gameplay_engine.get_play_order(self.get_landlord(), self.get_peasants())
+            winner, total_stake = self.gameplay_engine.play_round(order, self.get_round_stake())
+            self.update_players_stake(winner, total_stake)
 
             # round ends, prepare next round.
             self.reset()
@@ -111,6 +114,25 @@ class LandlordGame:
         p3.set_cards(c3)
 
         return wildcards
+
+    def update_players_stake(self, winner: Player, total_stake: int) -> None:
+        '''Updates the stake of all players with the total stake. If the landlord wins, the landlord
+        receives the total stake, while peasants pay the landlord. If the peasants win, they each 
+        receives the total stake, while the landlord pays each peasant. 
+        
+        Args:
+            winner - A Player object representing the round winner.
+            total_stake - An integer representing the stake the winner player has won and the amount
+                        the losing player(s) must pay.
+        '''
+        if winner==self.get_landlord():
+            for peasant in self.get_peasants():
+                winner.set_stake_amount(winner.get_stake_amount() + total_stake)
+                peasant.set_stake_amount(peasant.get_stake_amount() - total_stake)
+        else:
+            for peasant in self.get_peasants():
+                self.get_landlord().set_stake_amount(self.get_landlord().get_stake_amount() - total_stake)
+                peasant.set_stake_amount(peasant.get_stake_amount() + total_stake)
 
     def reset(self):
         '''Resets the round in a game of landlord.'''
@@ -217,6 +239,9 @@ class GameplayEngine:
                 player.set_random_hand()
             
             if player.get_hand():
+                if self.double_round_stake(player, previous_player_to_play_hand):
+                    stake *= 2
+                
                 previous_hand, previous_player_to_play_hand = player.get_hand(), player 
                 player.play_hand()
                 player.hand.reset()
@@ -241,6 +266,19 @@ class GameplayEngine:
             peasants - A list of Player objects that represents the peasants in a single round.
         '''
         return peasants + [landlord]
+
+    def double_round_stake(self, player: Player, previous_player: Player) -> bool:
+        '''Returns True if the round stake should be doubled, False otherwise.
+        
+        Args:
+            player - A Player object representing the current player who is playing a hand.
+            previous_player - A Player object representing the previous player to play a hand. 
+        '''
+        card_number_freq = defaultdict(int)
+        for card in player.get_hand():
+            card_number_freq[card.get_number()] += 1
+
+        return player==previous_player or rules.is_bomb(card_number_freq) or rules.is_rocket(card_number_freq)
 
     def reset(self):
         '''Resets the GameplayEngine class, resetting the landlord and peasants in the round.'''
