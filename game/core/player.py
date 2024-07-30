@@ -49,8 +49,6 @@ class Player:
         else:
             self.bid = amount
 
-        # self.set_stake_amount(self.get_stake_amount() - self.get_bid_amount())
-
         return True
 
     def get_random_bid_amount(self) -> int:
