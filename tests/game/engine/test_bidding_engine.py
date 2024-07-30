@@ -1,5 +1,5 @@
 import unittest
-from game_engine import BiddingEngine
+from game.engine.bidding import BiddingEngine
 from game_player import Player
 from card_deck import CardDeck
 
