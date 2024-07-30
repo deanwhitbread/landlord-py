@@ -1,5 +1,4 @@
-
-from misc import constants as const
+import misc.constants as const
 
 ''' Valid Card Hands Methods '''
 def is_solo(number_freq: dict[int:int]) -> bool:

@@ -1,7 +1,7 @@
 import unittest
-from game_engine import BiddingEngine
-from game_player import Player
-from card_deck import CardDeck
+from game.engine.bidding import BiddingEngine
+from game.core.deck import CardDeck
+from game.core.player import Player
 
 class BiddingEngineTestCase(unittest.TestCase):
     def setUp(self):

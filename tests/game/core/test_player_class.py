@@ -1,7 +1,7 @@
 import unittest
-from game_player import Player
 from tests import helpers 
-from card_deck import CardDeck
+from game.core.deck import CardDeck
+from game.core.player import Player
 
 class PlayerClassTestCase(unittest.TestCase):
     def setUp(self):

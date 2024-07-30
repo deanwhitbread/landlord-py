@@ -1,4 +1,4 @@
-from card_deck import Card
+from game.core.card import Card
 
 class TestHelpers:
     def __init__(self):
