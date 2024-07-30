@@ -1,9 +1,9 @@
 import unittest
-from game_engine import LandlordGame
 from game_player import Player
 from card_deck import CardDeck
 from tests import helpers
 from game.engine.gameplay import GameplayEngine
+from game.landlord import LandlordGame
 
 class LandlordGameTestCase(unittest.TestCase):
     def setUp(self):
