@@ -4,6 +4,7 @@ from tests import helpers
 from game.engine.gameplay import GameplayEngine
 from game.landlord import LandlordGame
 from game.core.player import Player
+import misc.constants as const
 
 class GameplayEngineTestCase(unittest.TestCase):
     def setUp(self):
@@ -139,3 +140,22 @@ class GameplayEngineTestCase(unittest.TestCase):
         self.assertEqual(self.game.get_round_stake(), 3)
         winner, total_stake = self.gameplay.play_round(order, self.game.get_round_stake())
         self.assertEqual(total_stake, 3*2)
+
+    def test_maximum_total_stake_limit(self):
+        landlord_cards = [[8,10,12,13,1,2,15]]
+        peasants_cards = [[3,4,4,6,6,6,9,10], [3,3,7,7]]
+        landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
+        peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)
+        p1, p2, p3 = self.game.get_players()
+        p1.set_bid(3), p2.set_bid(1), p3.set_bid(2)
+        self.game._execute_bidding()
+        p1.set_cards(landlord_cards[0]), p2.set_cards(peasants_cards[0]), p3.set_cards(peasants_cards[1])
+        order = self.gameplay.get_play_order(self.game.get_landlord(), self.game.get_peasants())
+        winner, total_stake = self.gameplay.play_round(order, self.game.get_round_stake())
+        self.assertEqual(total_stake, const.MAX_STAKE_LIMIT)
+
+    def test_valid_is_round_stake_below_limit_method(self):
+        self.assertTrue(self.gameplay.is_round_stake_below_limit(const.MAX_STAKE_LIMIT / 2))
+
+    def test_invalid_is_round_stake_below_limit_method(self):
+        self.assertFalse(self.gameplay.is_round_stake_below_limit(const.MAX_STAKE_LIMIT))
