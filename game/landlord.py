@@ -126,12 +126,21 @@ class LandlordGame:
         '''
         if winner==self.get_landlord():
             for peasant in self.get_peasants():
-                winner.set_stake_amount(winner.get_stake_amount() + total_stake)
-                peasant.set_stake_amount(peasant.get_stake_amount() - total_stake)
+                if peasant.get_stake_amount()<total_stake:
+                    winner.set_stake_amount(winner.get_stake_amount() + peasant.get_stake_amount())
+                    peasant.set_stake_amount(peasant.get_stake_amount() - peasant.get_stake_amount())
+                else:
+                    winner.set_stake_amount(winner.get_stake_amount() + total_stake)
+                    peasant.set_stake_amount(peasant.get_stake_amount() - total_stake)
         else:
+            if self.get_landlord().get_stake_amount()<total_stake:
+                landlord_pay = self.get_landlord().get_stake_amount() // 2
+            else:
+                landlord_pay = total_stake
+
             for peasant in self.get_peasants():
-                self.get_landlord().set_stake_amount(self.get_landlord().get_stake_amount() - total_stake)
-                peasant.set_stake_amount(peasant.get_stake_amount() + total_stake)
+                self.get_landlord().set_stake_amount(self.get_landlord().get_stake_amount() - landlord_pay)
+                peasant.set_stake_amount(peasant.get_stake_amount() + landlord_pay)
 
     def reset(self):
         '''Resets the round in a game of landlord.'''
