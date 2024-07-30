@@ -1,7 +1,7 @@
 from card_hand import CardHand, Card
-import game_rules as rules
 import random 
 from collections import defaultdict
+import game.rules as rules
 
 class Player:
     def __init__(self):

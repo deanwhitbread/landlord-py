@@ -1,7 +1,7 @@
 import unittest
 from tests import helpers 
-import game_rules as rules
 from misc import constants as const
+import game.rules as rules
 
 class GameRulesTestCase(unittest.TestCase):
     def setUp(self):

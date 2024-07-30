@@ -1,6 +1,6 @@
 from collections import defaultdict
 from game_player import Player
-import game_rules as rules
+import game.rules as rules
 
 class GameplayEngine:
     def __init__(self):

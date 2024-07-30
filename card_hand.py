@@ -1,9 +1,8 @@
 from card_deck import Card
-import game_rules as rules
 from collections import Counter, defaultdict
 import random
-import game_rules as rules
 from misc.constants import CARD_CATEGORY as CATEGORY
+import game.rules as rules
 
 class CardHand:
     def __init__(self):
