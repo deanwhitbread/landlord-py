@@ -233,8 +233,6 @@ class CardHandTestCase(unittest.TestCase):
         self.assertEqual(len(self.hand.get_hand()), 0)
 
     def test_get_similar_cards_method_returns_array_containing_same_cards(self):
-        # previous_hands = [[5], [5,6,7,8,9], [8,8,8], [5,5], [4,4,4,4]]
-        # player_cards = [[3,4,8,10], [4,4,7,8,9,10,11,13], [4,5,5,7,11,11,11,2], [4,4,8,8,9,9,10,11,12], [7,7,7,7,12,1]]
         player_cards = [[3,4,5,5,7,8,11], [7,7,7,8,8,8,10,13], [5,7,1,1,2,2,2]]
         player_cards = self.hlpr.convert_hand_numbers_to_card_objects(player_cards)
         for cards in player_cards:
@@ -388,3 +386,44 @@ class CardHandTestCase(unittest.TestCase):
             trio_hands = self.hand._get_all_trios(hand, freq_map)
             self.assertTrue(len(trio_hands)==0)
     
+    def test_rocket_hand_can_be_played_at_any_time(self):
+        previous_hand = [[13,13,13,2,2]] 
+        cards = [[3,3,3,5,5,14,15]] 
+        previous_hand = self.hlpr.convert_hand_numbers_to_card_objects(previous_hand)
+        cards = self.hlpr.convert_hand_numbers_to_card_objects(cards)
+        self.hand.set_random_hand(cards[0], previous_hand[0])
+        hand_numbers = set([card.get_number() for card in self.hand.get_hand()])
+        self.assertIn(14, hand_numbers)
+        self.assertIn(15, hand_numbers)
+        self.assertEqual(len(self.hand.get_hand()), 2)
+
+    def test_bomb_hand_can_be_played_at_any_time(self):
+        previous_hand = [[13,13,13,2,2]] 
+        cards = [[3,3,3,3,5,5,12]] 
+        previous_hand = self.hlpr.convert_hand_numbers_to_card_objects(previous_hand)
+        cards = self.hlpr.convert_hand_numbers_to_card_objects(cards)
+        self.hand.set_random_hand(cards[0], previous_hand[0])
+        hand_numbers = set([card.get_number() for card in self.hand.get_hand()])
+        self.assertIn(3, hand_numbers)
+        self.assertEqual(len(self.hand.get_hand()), 4) 
+
+    def test_can_play_higher_bomb_hand_when_previous_hand_is_a_bomb_hand(self):
+        previous_hand = [[5,5,5,5]] 
+        cards = [[4,4,7,7,7,7,9,10]] 
+        previous_hand = self.hlpr.convert_hand_numbers_to_card_objects(previous_hand)
+        cards = self.hlpr.convert_hand_numbers_to_card_objects(cards)
+        self.hand.set_random_hand(cards[0], previous_hand[0])
+        hand_numbers = set([card.get_number() for card in self.hand.get_hand()])
+        self.assertIn(7, hand_numbers)
+        self.assertEqual(len(self.hand.get_hand()), 4)  
+
+    def test_can_play_rocket_hand_when_previous_hand_is_a_bomb_hand(self):
+        previous_hand = [[2,2,2,2]] 
+        cards = [[5,6,7,11,14,15]] 
+        previous_hand = self.hlpr.convert_hand_numbers_to_card_objects(previous_hand)
+        cards = self.hlpr.convert_hand_numbers_to_card_objects(cards)
+        self.hand.set_random_hand(cards[0], previous_hand[0])
+        hand_numbers = set([card.get_number() for card in self.hand.get_hand()])
+        self.assertIn(14, hand_numbers)
+        self.assertIn(15, hand_numbers)
+        self.assertEqual(len(self.hand.get_hand()), 2)

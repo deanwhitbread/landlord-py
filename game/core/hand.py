@@ -11,7 +11,6 @@ class CardHand:
         '''
         self.reset()
 
-    # def set_hand(self, hand: list[Card]):
     def set_hand(self, hand: list[Card], previous_hand: list[Card]=None, valid_hands: list[Card]=None) -> None:
         '''Set the selected cards as the player's card hand. If previous_hand is given, valid_hands
         parameter is needed to set a hand of the same card category as the previous hand, if possible.
@@ -29,7 +28,8 @@ class CardHand:
 
             possible_hands = list()
             for hand in (valid_hands):
-                if self.get_hand_category(hand)==category and self.get_hand_score(hand)>previous_hand_score:
+                if ((self.get_hand_category(hand)==category and self.get_hand_score(hand)>previous_hand_score) 
+                            or self.get_hand_category(hand)==CATEGORY.ROCKET or self.get_hand_category(hand)==CATEGORY.BOMB):
                     possible_hands.append(hand)
             
             if len(possible_hands)>0:
@@ -245,7 +245,7 @@ class CardHand:
             if array[-1][0].get_number()==14:
                 array = array[:-1]
 
-        while array[0][0].get_number()==1 or array[0][0].get_number()==2:
+        while len(array)>1 and array[0][0].get_number()==1 or array[0][0].get_number()==2:
             if array[0][0].get_number()==1:
                 ace = array[0]
                 array = array[1:] + [ace]
