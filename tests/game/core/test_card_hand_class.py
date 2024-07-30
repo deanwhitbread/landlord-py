@@ -1,6 +1,6 @@
 import unittest
 from tests import helpers
-from misc import constants as const
+import misc.constants as const
 from game.core.card import Card
 from game.core.deck import CardDeck
 from game.core.hand import CardHand

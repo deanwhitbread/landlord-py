@@ -1,5 +1,5 @@
-
-from misc import helpers as hlpr, constants as const
+import misc.constants as const
+import misc.helpers as hlpr
 import random
 from game.core.card import Card
 
