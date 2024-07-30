@@ -245,7 +245,7 @@ class CardHand:
             if array[-1][0].get_number()==14:
                 array = array[:-1]
 
-        while array[0][0].get_number()==1 or array[0][0].get_number()==2:
+        while len(array)>1 and array[0][0].get_number()==1 or array[0][0].get_number()==2:
             if array[0][0].get_number()==1:
                 ace = array[0]
                 array = array[1:] + [ace]
