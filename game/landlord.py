@@ -1,7 +1,8 @@
 from game.engine.bidding import BiddingEngine
 from game.engine.gameplay import GameplayEngine
-from card_deck import CardDeck, Card
 from game_player import Player
+from game.core.card import Card
+from game.core.deck import CardDeck
 
 class LandlordGame:
     def __init__(self, players):

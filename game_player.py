@@ -1,7 +1,9 @@
-from card_hand import CardHand, Card
 import random 
 from collections import defaultdict
 import game.rules as rules
+from game.core.card import Card 
+from game.core.deck import CardDeck
+from card_hand import CardHand
 
 class Player:
     def __init__(self):
