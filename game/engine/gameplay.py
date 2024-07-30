@@ -1,6 +1,7 @@
 from collections import defaultdict
 import game.rules as rules
 from game.core.player import Player
+import misc.constants as const
 
 class GameplayEngine:
     def __init__(self):
@@ -33,7 +34,8 @@ class GameplayEngine:
                 player.set_random_hand()
             
             if player.get_hand():
-                if self.double_round_stake(player, previous_player_to_play_hand):
+                if (self.double_round_stake(player, previous_player_to_play_hand) and
+                            self.is_round_stake_below_limit(stake)):
                     stake *= 2
                 
                 previous_hand, previous_player_to_play_hand = player.get_hand(), player 
@@ -73,6 +75,9 @@ class GameplayEngine:
             card_number_freq[card.get_number()] += 1
 
         return player==previous_player or rules.is_bomb(card_number_freq) or rules.is_rocket(card_number_freq)
+    
+    def is_round_stake_below_limit(self, stake):
+        return stake < const.MAX_STAKE_LIMIT
 
     def reset(self):
         '''Resets the GameplayEngine class, resetting the landlord and peasants in the round.'''
