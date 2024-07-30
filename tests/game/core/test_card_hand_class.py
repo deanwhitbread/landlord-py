@@ -3,7 +3,7 @@ from tests import helpers
 from misc import constants as const
 from game.core.card import Card
 from game.core.deck import CardDeck
-from card_hand import CardHand
+from game.core.hand import CardHand
 
 class CardHandTestCase(unittest.TestCase):
     def setUp(self):

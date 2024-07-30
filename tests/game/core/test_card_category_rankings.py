@@ -1,6 +1,6 @@
 import unittest
-from card_hand import CardHand 
 from tests import helpers
+from game.core.hand import CardHand
 
 class CardCategoryRankingsTestCase(unittest.TestCase):
     def setUp(self):
