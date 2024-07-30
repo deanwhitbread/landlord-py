@@ -1,4 +1,4 @@
-from game_player import Player
+from game.core.player import Player
 
 class BiddingEngine:
     def __init__(self):
