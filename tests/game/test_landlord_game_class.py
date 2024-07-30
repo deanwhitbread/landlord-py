@@ -142,3 +142,44 @@ class LandlordGameTestCase(unittest.TestCase):
         self.assertTrue(p1.get_stake_amount()<=p1_stake - (self.game.get_round_stake()*2))
         self.assertTrue(p2.get_stake_amount()>=p2_stake + self.game.get_round_stake())
         self.assertTrue(p3.get_stake_amount()>=p3_stake + self.game.get_round_stake())
+
+    def test_amount_landlord_pays_does_not_exceed_their_remaining_player_stake(self):
+        p1, p2, p3 = self.game.get_players()
+        p1.set_stake_amount(3)
+        p1.set_bid(p1.get_stake_amount()), p2.set_bid(2), p3.set_bid(1) 
+        self.assertEqual(p1.get_bid_amount(), p1.get_stake_amount())
+        self.game._execute_bidding()
+
+        landlord_cards = [[3,4,8,11]]
+        peasants_cards = [[14,15], [3,3,7,7,7,9,11,13]]
+        landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
+        peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)
+        p1.set_cards(landlord_cards[0]), p2.set_cards(peasants_cards[0]), p3.set_cards(peasants_cards[1])  
+
+        order = self.gameplay.get_play_order(self.game.get_landlord(), self.game.get_peasants())
+        winner, total_stake = self.gameplay.play_round(order, self.game.get_round_stake())
+        self.assertEqual(total_stake, 6)
+        self.game.update_players_stake(winner, total_stake)
+        self.assertEqual(p1.get_stake_amount(), 0)
+        self.assertEqual(p2.get_stake_amount(), 63)
+        self.assertEqual(p3.get_stake_amount(), 63)
+    
+    def test_amount_peasant_pays_does_not_exceed_their_remaining_player_stake(self):
+        p1, p2, p3 = self.game.get_players()
+        p2.set_stake_amount(4)
+        p1.set_bid(3), p2.set_bid(2), p3.set_bid(1) 
+        self.game._execute_bidding()
+
+        landlord_cards = [[14,15]]
+        peasants_cards = [[3,4,4,6,6,6,9,10], [3,3,7,7,7,9,11]]
+        landlord_cards = self.hlpr.convert_hand_numbers_to_card_objects(landlord_cards)
+        peasants_cards = self.hlpr.convert_hand_numbers_to_card_objects(peasants_cards)
+        p1.set_cards(landlord_cards[0]), p2.set_cards(peasants_cards[0]), p3.set_cards(peasants_cards[1])  
+
+        order = self.gameplay.get_play_order(self.game.get_landlord(), self.game.get_peasants())
+        winner, total_stake = self.gameplay.play_round(order, self.game.get_round_stake())
+        self.assertEqual(total_stake, 6)
+        self.game.update_players_stake(winner, total_stake)
+        self.assertEqual(p1.get_stake_amount(), 70)
+        self.assertEqual(p2.get_stake_amount(), 0)
+        self.assertEqual(p3.get_stake_amount(), 54)
