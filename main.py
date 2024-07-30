@@ -1,4 +1,10 @@
-from card_deck import CardDeck
+from game.landlord import LandlordGame
+from game.core.player import Player
+
+MAX_PLAYERS = 3
 
 if __name__=='__main__':
-    deck = CardDeck()
+    game = LandlordGame([Player() for _ in range(MAX_PLAYERS)])
+    while not game.has_game_ended():        
+        game.play()
+    
