@@ -23,7 +23,7 @@ class LandlordGame:
         played, False otherwise.'''
         if self.has_game_ended():
             return False
-
+        
         wildcards = self.deal_cards_to_players()
 
         if self.all_players_passed_during_bidding():
@@ -32,8 +32,11 @@ class LandlordGame:
             return False
         else:
             # execute the bidding round
-            self._execute_bidding()
+            if not self._execute_bidding():
+                self.reset() 
 
+                return False
+            
             # reveal wildcards to all players at the end of bidding 
             print(wildcards)
 
@@ -54,15 +57,12 @@ class LandlordGame:
     def _execute_bidding(self) -> bool:
         '''Simulates the bidding between players in the game. Returns True if
         the players have submitted a bid, False if all players have skipped bidding.'''
-        if self.all_players_passed_during_bidding():
-            return False
-
         p1, p2, p3 = self.get_players()
         game_players = [p1, p2, p3]
         self.stake, self.landlord = self.bidding_engine.execute_bidding_round()
         self.peasants = [player for player in game_players if player!=self.get_landlord()]
-
-        return True
+        
+        return not self.all_players_passed_during_bidding()
 
     def get_landlord(self) -> Player:
         '''Returns a Player object representing the player who is the landlord in the round.'''
@@ -91,7 +91,7 @@ class LandlordGame:
     def has_game_ended(self) -> bool:
         '''Returns True if there is a player that has no more stake to bid, False otherwise.'''
         for player in self.get_players():
-            if player.get_stake_amount()==0:
+            if player.get_stake_amount()<=0:
                 return True
         
         return False
