@@ -1,10 +1,11 @@
+import abc
 from game.engine.bidding import BiddingEngine
 from game.engine.gameplay import GameplayEngine
 from game.core.card import Card
 from game.core.deck import CardDeck
 from game.core.player import Player
 
-class LandlordGame:
+class SimulationInterface:
     def __init__(self, players):
         '''Construct a Landlord Game object.
         
@@ -18,51 +19,21 @@ class LandlordGame:
         self.gameplay_engine = GameplayEngine()
         self.reset()
 
+    @abc.abstractmethod
     def play(self) -> bool:
         '''Play a round of Landlord. True is returned if a round can be
         played, False otherwise.'''
-        if self.has_game_ended():
-            return False
-
-        wildcards = self.deal_cards_to_players()
-
-        if self.all_players_passed_during_bidding():
-            self.reset() 
-
-            return False
-        else:
-            # execute the bidding round
-            self._execute_bidding()
-
-            # reveal wildcards to all players at the end of bidding 
-            print(wildcards)
-
-            # add cards to the landlords cards.
-            self.give_landlord_wildcards(wildcards)
-
-            # play round
-            # get play order
-            order = self.gameplay_engine.get_play_order(self.get_landlord(), self.get_peasants())
-            winner, total_stake = self.gameplay_engine.play_round(order, self.get_round_stake())
-            self.update_players_stake(winner, total_stake)
-
-            # round ends, prepare next round.
-            self.reset()
-
-            return True
+        pass
 
     def _execute_bidding(self) -> bool:
         '''Simulates the bidding between players in the game. Returns True if
         the players have submitted a bid, False if all players have skipped bidding.'''
-        if self.all_players_passed_during_bidding():
-            return False
-
         p1, p2, p3 = self.get_players()
         game_players = [p1, p2, p3]
         self.stake, self.landlord = self.bidding_engine.execute_bidding_round()
         self.peasants = [player for player in game_players if player!=self.get_landlord()]
-
-        return True
+        
+        return not self.all_players_passed_during_bidding()
 
     def get_landlord(self) -> Player:
         '''Returns a Player object representing the player who is the landlord in the round.'''
@@ -91,7 +62,7 @@ class LandlordGame:
     def has_game_ended(self) -> bool:
         '''Returns True if there is a player that has no more stake to bid, False otherwise.'''
         for player in self.get_players():
-            if player.get_stake_amount()==0:
+            if player.get_stake_amount()<=0:
                 return True
         
         return False

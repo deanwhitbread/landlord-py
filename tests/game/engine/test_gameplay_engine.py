@@ -2,9 +2,9 @@
 import unittest
 from tests import helpers 
 from game.engine.gameplay import GameplayEngine
-from game.landlord import LandlordGame
 from game.core.player import Player
 import misc.constants as const
+from game.interface.simulation import SimulationInterface
 
 class GameplayEngineTestCase(unittest.TestCase):
     def setUp(self):
@@ -23,7 +23,7 @@ class GameplayEngineTestCase(unittest.TestCase):
         cls.gameplay = GameplayEngine()
         cls.landlord = Player()
         cls.peasant1, cls.peasant2 = Player(), Player()
-        cls.game = LandlordGame([cls.landlord, cls.peasant1, cls.peasant2])
+        cls.game = SimulationInterface([cls.landlord, cls.peasant1, cls.peasant2])
         cls.hlpr = helpers.TestHelpers()
 
     @classmethod

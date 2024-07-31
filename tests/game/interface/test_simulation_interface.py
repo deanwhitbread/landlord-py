@@ -1,11 +1,11 @@
 import unittest
 from tests import helpers
 from game.engine.gameplay import GameplayEngine
-from game.landlord import LandlordGame
 from game.core.deck import CardDeck
 from game.core.player import Player
+from game.interface.simulation import SimulationInterface
 
-class LandlordGameTestCase(unittest.TestCase):
+class SimulationInterfaceTestCase(unittest.TestCase):
     def setUp(self):
         self.deck.shuffle()
         p1_cards, p2_cards, p3_cards, self.wildcards = self.deck.deal()
@@ -28,7 +28,7 @@ class LandlordGameTestCase(unittest.TestCase):
         cls.player3 = Player()
 
         players = [cls.player1, cls.player2, cls.player3]
-        cls.game = LandlordGame(players)
+        cls.game = SimulationInterface(players)
         cls.deck = CardDeck()
         cls.hlpr = helpers.TestHelpers()
         cls.gameplay = GameplayEngine()
@@ -70,14 +70,6 @@ class LandlordGameTestCase(unittest.TestCase):
         self.assertEqual(self.game.get_round_stake(), 0)
         self.assertTrue(self.game._execute_bidding())
         self.assertNotEqual(self.game.get_round_stake(), 0)
-    
-    def test_round_pot_resets_after_round_ends(self):
-        self.assertEqual(self.game.get_round_stake(), 0)
-        self.player1.set_bid(1)
-        self.player2.set_bid(0)
-        self.player3.set_bid(0)
-        self.assertTrue(self.game.play())
-        self.assertEqual(self.game.get_round_stake(), 0)
 
     def test_game_ends_when_one_players_stake_reaches_zero(self):
         self.player1.set_stake_amount(0)
@@ -182,3 +174,4 @@ class LandlordGameTestCase(unittest.TestCase):
         self.assertEqual(p1.get_stake_amount(), 70)
         self.assertEqual(p2.get_stake_amount(), 0)
         self.assertEqual(p3.get_stake_amount(), 54)
+    
