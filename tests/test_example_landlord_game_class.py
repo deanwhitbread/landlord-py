@@ -1,6 +1,6 @@
 import unittest
 from game.core.player import Player
-from landlord import LandlordGame
+from example import LandlordGame
 
 class LandlordGameTestCase(unittest.TestCase):
     def setUp(self):
