@@ -1,4 +1,4 @@
-from game.landlord import LandlordGame
+from landlord import LandlordGame
 from game.core.player import Player
 
 MAX_PLAYERS = 3
